@@ -14,6 +14,30 @@ def parse_grammar(file):
 
   return list(heads), list(productions)
 
+class Node:
+  father = None
+  children = list()
+  symbol = None
+
+  def __init__(self, symbol, father, children):
+    print(f"node {symbol}")
+    self.symbol = symbol
+    self.father = father
+    self.children = children
+
+  def __repr__(self):
+    s = self.symbol
+    return s
+    if self.children:
+      s += '('
+      for child in self.children:
+        s += '(' + repr(child) + ') '
+      s += ')'
+    return s
+
+  def __str__(self):
+    return self.symbol
+
 def find_heads(cfg, production):
   print(f"Searching cfg for production {production}")
   
@@ -21,39 +45,39 @@ def find_heads(cfg, production):
   if not rules:
     return list()
 
+  print(f"Found rules {rules}")
   heads, production = zip(*rules)
   return list(heads)
 
 def CKY(cfg, sentence):
-  heads, productions = cfg
   words = sentence.split(' ')
   N = len(words)
   matrix = np.empty((N, N), dtype=object)
   for i in range(N):
     for j in range(N):
       matrix[i, j] = list()
-  #matrix = [[None]*N]*N
   pprint(matrix)
 
   for j in range(0, N):
     tags = find_heads(cfg, words[j])
     print(f"Tags for {words[j-1]}: {tags}")
-    matrix[j][j] = tags
+    matrix[j][j] = list(map(lambda tag: Node(symbol=tag, children=[], father=None), tags))
 
-    pprint(matrix)
+    print(matrix)
     for i in range(j-1, -1, -1):
       for k in range(i+1, j+1):
-        print(f"i: {i} k: {k}")
-        B = matrix[i, k]
-        C = matrix[k, j-1]
+        B = matrix[i, k-1]
+        C = matrix[k, j]
+
+        print(f"B[{i}, {k}]={B}, C[{k}, {j}]={C}")
+        heads = list()
 
         for b in B:
           for c in C:
-            print(f"i:{i}, k:{k}, j:{j} b: {b}, c: {c}")
             A = find_heads(cfg, "{} {}".format(b, c))
-            if matrix[i, j-1] is None:
-              matrix[i, j-1] = list()
-            matrix[i, j-1].append(A)
+            heads.extend(list(map(lambda head: Node(symbol=head, children=[B, C], father=None), A)))
+        
+        matrix[i, j].extend(heads)
 
   return matrix
 
@@ -62,3 +86,4 @@ print(cfg)
 
 matrix = CKY(cfg, 'Paolo ama Francesca dolcemente')
 pprint(matrix)
+pprint(matrix[0, -1][0].children)
