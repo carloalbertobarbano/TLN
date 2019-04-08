@@ -14,38 +14,32 @@ def parse_grammar(file):
 
   return list(heads), list(productions)
 
-class Node:
-  father = None
-  children = list()
+class Constituent:
+  children = None
   symbol = None
 
-  def __init__(self, symbol, father, children):
-    print(f"node {symbol}")
+  def __init__(self, symbol, children):
     self.symbol = symbol
-    self.father = father
     self.children = children
 
   def __repr__(self):
     s = self.symbol
-    return s
+
     if self.children:
       s += '('
       for child in self.children:
-        s += '(' + repr(child) + ') '
+        s += ' ' + repr(child)
       s += ')'
     return s
 
   def __str__(self):
     return self.symbol
 
-def find_heads(cfg, production):
-  print(f"Searching cfg for production {production}")
-  
+def find_heads(cfg, production):  
   rules = list(filter(lambda rule: rule[1] == production, zip(*cfg)))
   if not rules:
     return list()
 
-  print(f"Found rules {rules}")
   heads, production = zip(*rules)
   return list(heads)
 
@@ -56,26 +50,25 @@ def CKY(cfg, sentence):
   for i in range(N):
     for j in range(N):
       matrix[i, j] = list()
-  pprint(matrix)
 
   for j in range(0, N):
     tags = find_heads(cfg, words[j])
-    print(f"Tags for {words[j-1]}: {tags}")
-    matrix[j][j] = list(map(lambda tag: Node(symbol=tag, children=[], father=None), tags))
+    matrix[j][j] = list(map(
+      lambda tag: Constituent(
+        symbol=tag, children=[]
+      ), tags
+    ))
 
-    print(matrix)
     for i in range(j-1, -1, -1):
       for k in range(i+1, j+1):
         B = matrix[i, k-1]
         C = matrix[k, j]
-
-        print(f"B[{i}, {k}]={B}, C[{k}, {j}]={C}")
         heads = list()
 
         for b in B:
           for c in C:
-            A = find_heads(cfg, "{} {}".format(b, c))
-            heads.extend(list(map(lambda head: Node(symbol=head, children=[B, C], father=None), A)))
+            A = find_heads(cfg, f"{b} {c}")
+            heads.extend(list(map(lambda head: Constituent(symbol=head, children=[b, c]), A)))
         
         matrix[i, j].extend(heads)
 
@@ -85,5 +78,6 @@ cfg = parse_grammar('paolofrancesca.cfg')
 print(cfg)
 
 matrix = CKY(cfg, 'Paolo ama Francesca dolcemente')
-pprint(matrix)
-pprint(matrix[0, -1][0].children)
+pprint(matrix[0, -1][0])
+
+yoda_cfg = parse_grammar('yoda.cfg')
