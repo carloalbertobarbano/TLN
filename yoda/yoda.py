@@ -1,4 +1,5 @@
 import numpy as np 
+import copy
 from pprint import pprint
 
 def parse_grammar(file):
@@ -17,13 +18,16 @@ def parse_grammar(file):
 class Constituent:
   children = None
   symbol = None
+  tag = None
 
   def __init__(self, symbol, children):
     self.symbol = symbol
     self.children = children
+    self.tag = None #''
 
   def __repr__(self):
-    s = self.symbol
+    s = self.symbol + ('[' + self.tag + ']' if self.tag else '')
+    #return s
 
     if self.children:
       s += '('
@@ -34,6 +38,13 @@ class Constituent:
 
   def __str__(self):
     return self.symbol
+
+  def print_sentence(self):
+    if not self.children:
+      print(self.symbol + ' ', end='')
+    else:
+      for child in self.children:
+        child.print_sentence()
 
 def find_heads(cfg, production):  
   rules = list(filter(lambda rule: rule[1] == production, zip(*cfg)))
@@ -55,7 +66,7 @@ def CKY(cfg, sentence):
     tags = find_heads(cfg, words[j])
     matrix[j][j] = list(map(
       lambda tag: Constituent(
-        symbol=tag, children=[]
+        symbol=tag, children=[Constituent(symbol=words[j], children=[])]
       ), tags
     ))
 
@@ -74,10 +85,66 @@ def CKY(cfg, sentence):
 
   return matrix
 
-cfg = parse_grammar('paolofrancesca.cfg')
+# Rules: 
+# ['S -> S VX',
+#  'VP -> V X']
+def tag_svx(S, rules):
+  for rule in rules:
+    head, tags = map(lambda s: s.strip(), rule.split('->'))
+    tags = tags.split(' ')
+
+    if S.symbol == rule.split('->')[0].strip():
+      S.children[0].tag = tags[0]
+      S.children[1].tag = tags[1]
+    
+  for child in S.children:
+    tag_svx(child, rules)
+
+def svx_sxv(S):
+  if not S.children or len(S.children) < 2:
+    return
+
+  svx_sxv(S.children[0])
+  svx_sxv(S.children[1])
+
+  if S.children[0].tag == 'V' and S.children[1].tag == 'X':
+    S.tag = 'XV'
+    S.children.reverse()
+
+def sxv_xsv(S):
+  if not S.children or len(S.children) < 2:
+    return
+  
+  sxv_xsv(S.children[0])
+  sxv_xsv(S.children[1])
+
+  if S.children[0].tag == 'S' and S.children[1].children[0].tag == 'X':
+    S.tag = 'SX'
+    s = S.children[0]
+    x = S.children[1].children[0]
+    S.children[0], S.children[1].children[0] = x, s
+  
+def transfer(src):
+  res = copy.deepcopy(src)
+  
+  # Step 1. SVX -> SXV
+  svx_sxv(res)
+  # Step 2. SXV -> XSV
+  sxv_xsv(res)
+  
+  return res
+
+cfg = parse_grammar('G1.cfg')
 print(cfg)
 
-matrix = CKY(cfg, 'Paolo ama Francesca dolcemente')
-pprint(matrix[0, -1][0])
+matrix = CKY(cfg, 'noi siamo illuminati')
 
-yoda_cfg = parse_grammar('yoda.cfg')
+S = matrix[0, -1][0]
+S.print_sentence()
+print()
+
+tag_svx(S, ['S -> S VX', 'VP -> V X'])
+print(repr(S))
+
+res = transfer(S)
+print(repr(res))
