@@ -137,7 +137,7 @@ def transfer(src):
 cfg = parse_grammar('G1.cfg')
 print(cfg)
 
-matrix = CKY(cfg, 'noi siamo illuminati')
+matrix = CKY(cfg, 'tu avrai novecento anni di età')
 
 S = matrix[0, -1][0]
 S.print_sentence()
@@ -148,3 +148,4 @@ print(repr(S))
 
 res = transfer(S)
 print(repr(res))
+res.print_sentence()
