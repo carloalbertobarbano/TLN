@@ -93,7 +93,7 @@ def tag_svx(S, rules):
     head, tags = map(lambda s: s.strip(), rule.split('->'))
     tags = tags.split(' ')
 
-    if S.symbol == rule.split('->')[0].strip():
+    if S.symbol == head:
       S.children[0].tag = tags[0]
       S.children[1].tag = tags[1]
     
