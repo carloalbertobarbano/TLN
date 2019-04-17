@@ -3,19 +3,17 @@ def loadNasari(path):
     lines = file.readlines()
 
   lines = filter(lambda line: not line.startswith('#') and line.strip(), lines)
+  lines = [line.split(';') for line in lines]
   nasari = {}
 
-  for line in lines:
-    vec = line.split(';')
+  for vec in lines:
     babel_id = vec[0]
     word = vec[1]
     synsets = filter(lambda s: s and s.strip(), vec[2:])
-
     nasari[word] = {'babel_id': babel_id, 'synsets': {}}
+
+    synsets = list(filter(lambda synset: '_' in synset, synsets))
     for synset in synsets:
-      if '_' not in synset:
-        continue
-      #print(synset)
       synset_name, synset_weight = synset.split('_')
       nasari[word]['synsets'][synset_name] = float(synset_weight)
 
