@@ -51,12 +51,20 @@ def find_LCS(s1: Synset, s2: Synset) -> Synset:
 
   return lcs[0]
 
+def synsets_distance(s1: Synset, s2: Synset):
+  lcs = find_LCS(s1, s2)
+  if not lcs:
+    return None
+  
+  return s1.shortest_path_distance(s2)
+
 def path_len(s1: Synset, s2: Synset, lcs:Synset=None):
   if not lcs:
     lcs = find_LCS(s1, s2)
     if not lcs:
       return None
   
+  return synsets_distance(s1, lcs) + synsets_distance(s2, lcs)
 
 def wup_similarity(s1: Synset, s2: Synset):
   lcs = find_LCS(s1, s2)
@@ -64,15 +72,15 @@ def wup_similarity(s1: Synset, s2: Synset):
     return 0
 
   lcs_depth = lcs.min_depth() + 1
-  depth1 = s1.shortest_path_distance(lcs) + lcs_depth
-  depth2 = s2.shortest_path_distance(lcs) + lcs_depth
+  depth1 = synsets_distance(s1, lcs) + lcs_depth
+  depth2 = synsets_distance(s2, lcs) + lcs_depth
   return (2*lcs_depth) / (depth1 + depth2)
 
 def sp_similarity(s1: Synset, s2: Synset):
-  return 2*WORDNET_MAX_DEPTH - (s1.shortest_path_distance(s2) or 2*WORDNET_MAX_DEPTH)
+  return 2*WORDNET_MAX_DEPTH - (synsets_distance(s1, s2) or 2*WORDNET_MAX_DEPTH)
 
 def lch_similarity(s1: Synset, s2: Synset):
-  return -np.log((s1.shortest_path_distance(s2) or 1.)/(2*WORDNET_MAX_DEPTH))
+  return -np.log((synsets_distance(s1, s2) or 1.)/(2*WORDNET_MAX_DEPTH))
 
 def get_similarity(s1: Synset, s2: Synset, method='wup'):
   similarity_methods = {
@@ -80,6 +88,8 @@ def get_similarity(s1: Synset, s2: Synset, method='wup'):
     'sp': sp_similarity,
     'lch': lch_similarity
   }
+
+  return similarity_methods[method](s1, s2)
 
   s1._pos = wordnet.NOUN
   s2._pos = wordnet.NOUN
@@ -89,11 +99,7 @@ def get_similarity(s1: Synset, s2: Synset, method='wup'):
   elif method == 'sp':
     return s1.path_similarity(s2) or 0.
   else:
-    #try:
     return s1.lch_similarity(s2) or 0.
-    #except:
-    #  return 0
-  #return similarity_methods[method](s1, s2)
 
 def cov(X, Y):
   X = np.array(X)
