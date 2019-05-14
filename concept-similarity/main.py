@@ -58,25 +58,16 @@ def find_LCS(s1: Synset, s2: Synset) -> Synset:
   #print(f"custom lcs({s1},{s2})={lcs[0]}")
   return lcs[0]
 
-def distance_to_hypernym(s: Synset, hp: Synset, min_distance=np.inf, curr_distance=0):
-  #print(" "*curr_distance + f"s={s}, hp={hp}, min_distance={min_distance}, curr_distance={curr_distance}")
-  #print(" "*curr_distance + f"got {len(s.hypernyms())} hypernyms")
-
+def distance_to_hypernym(s: Synset, hp: Synset, min_distance=WORDNET_MAX_DEPTH, curr_distance=0):
   if s == hp:
-    #print(" "*curr_distance + f"distance is {curr_distance}")
     return curr_distance
 
   for hypernym in s.hypernyms():
-   # print(" "*curr_distance + f"Checking {hypernym} target {hp}")
     if hypernym == hp and curr_distance+1 < min_distance:
-      #print(" "*curr_distance + f"Found with min_dist={curr_distance}")
-      min_distance = curr_distance
-      #print(" "*curr_distance + f"min_dist={min_distance}")
+      min_distance = curr_distance + 1
     
-    #print(" "*curr_distance + f"min_dist={min_distance}")
-    min_distance = min(min_distance, distance_to_hypernym(hypernym, hp, min_distance, curr_distance+1))
+    min_distance = distance_to_hypernym(hypernym, hp, min_distance, curr_distance+1)
   
-  #print(" "*curr_distance + f"returing min_dist={min_distance}")
   return min_distance
 
 def synsets_distance(s1: Synset, s2: Synset):
@@ -84,10 +75,12 @@ def synsets_distance(s1: Synset, s2: Synset):
   if not lcs:
     return None
   
-  print()
+  #print()
   custom_dist = distance_to_hypernym(s1, lcs) + distance_to_hypernym(s2, lcs)
   nltk_dist = s1.shortest_path_distance(s2)
-  print(f"len({s1},{s2})= Custom dist: {custom_dist}, nltk dist: {nltk_dist}")
+
+  if custom_dist != nltk_dist:
+    print(f"len({s1},{s2}) = Custom dist: {custom_dist}, nltk dist: {nltk_dist}")
 
   return custom_dist
 
