@@ -22,11 +22,16 @@ def rec_hypernyms(s: Synset) -> List[Synset]:
 
 def get_hypernyms(s: Synset) -> List[Synset]:
   if not s._all_hypernyms:
-    s._all_hypernyms = set(
-      self_synset
-      for self_synsets in s._iter_hypernym_lists()
-      for self_synset in self_synsets
-    )
+    #s._all_hypernyms = set(
+    #  self_synset
+    #  for self_synsets in s._iter_hypernym_lists()
+    #  for self_synset in self_synsets
+    #)
+    s._all_hypernyms = []
+    for synsets in s._iter_hypernym_lists():
+      for synset in synsets:
+        s._all_hypernyms.append(synset)
+
     #s._all_hypernyms = set(rec_hypernyms(s))
   return s._all_hypernyms
 
@@ -35,6 +40,7 @@ def common_hypernyms(hp1, hp2) -> List[Synset]:
 
 def find_LCS(s1: Synset, s2: Synset) -> Synset:
   #g_lcs = s1.lowest_common_hypernyms(s2)
+  #print(f"nltk lcs({s1},{s2})={g_lcs}")
   #s1._all_hypernyms = None
   #s2._all_hypernyms = None
 
@@ -49,14 +55,41 @@ def find_LCS(s1: Synset, s2: Synset) -> Synset:
   #if lcs[0] != g_lcs[0]:
   #  print('LCS differ: ', lcs, g_lcs)
 
+  #print(f"custom lcs({s1},{s2})={lcs[0]}")
   return lcs[0]
+
+def distance_to_hypernym(s: Synset, hp: Synset, min_distance=np.inf, curr_distance=0):
+  #print(" "*curr_distance + f"s={s}, hp={hp}, min_distance={min_distance}, curr_distance={curr_distance}")
+  #print(" "*curr_distance + f"got {len(s.hypernyms())} hypernyms")
+
+  if s == hp:
+    #print(" "*curr_distance + f"distance is {curr_distance}")
+    return curr_distance
+
+  for hypernym in s.hypernyms():
+   # print(" "*curr_distance + f"Checking {hypernym} target {hp}")
+    if hypernym == hp and curr_distance+1 < min_distance:
+      #print(" "*curr_distance + f"Found with min_dist={curr_distance}")
+      min_distance = curr_distance
+      #print(" "*curr_distance + f"min_dist={min_distance}")
+    
+    #print(" "*curr_distance + f"min_dist={min_distance}")
+    min_distance = min(min_distance, distance_to_hypernym(hypernym, hp, min_distance, curr_distance+1))
+  
+  #print(" "*curr_distance + f"returing min_dist={min_distance}")
+  return min_distance
 
 def synsets_distance(s1: Synset, s2: Synset):
   lcs = find_LCS(s1, s2)
   if not lcs:
     return None
   
-  return s1.shortest_path_distance(s2)
+  print()
+  custom_dist = distance_to_hypernym(s1, lcs) + distance_to_hypernym(s2, lcs)
+  nltk_dist = s1.shortest_path_distance(s2)
+  print(f"len({s1},{s2})= Custom dist: {custom_dist}, nltk dist: {nltk_dist}")
+
+  return custom_dist
 
 def path_len(s1: Synset, s2: Synset, lcs:Synset=None):
   if not lcs:
