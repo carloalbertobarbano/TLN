@@ -16,31 +16,28 @@ def load_csv(path_csv):
   return term1, term2, np.array([float(s.strip()) for s in similarity])
 
 def rec_hypernyms(s: Synset) -> List[Synset]:
-  hypernyms = s.hypernyms()
+  hypernyms = s.hypernyms()+s.instance_hypernyms()
   for hypernym in hypernyms:
     hypernyms.extend(get_hypernyms(hypernym))
   return hypernyms
 
 def get_hypernyms(s: Synset) -> List[Synset]:
   if not s._all_hypernyms:
-    #s._all_hypernyms = set(
-    #  self_synset
-    #  for self_synsets in s._iter_hypernym_lists()
-    #  for self_synset in self_synsets
-    #)
+    #s._all_hypernyms = rec_hypernyms(s)
     s._all_hypernyms = []
     for synsets in s._iter_hypernym_lists():
       for synset in synsets:
         s._all_hypernyms.append(synset)
-
-    #s._all_hypernyms = set(rec_hypernyms(s))
   return s._all_hypernyms
 
 def common_hypernyms(hp1, hp2) -> List[Synset]:
   return list(set(hp1).intersection(set(hp2)))
 
+diff_lcs = 0
+
 def find_LCS(s1: Synset, s2: Synset) -> Synset:
-  #g_lcs = s1.lowest_common_hypernyms(s2)
+  global diff_lcs
+  g_lcs = s1.lowest_common_hypernyms(s2)
   #print(f"nltk lcs({s1},{s2})={g_lcs}")
   #s1._all_hypernyms = None
   #s2._all_hypernyms = None
@@ -53,8 +50,9 @@ def find_LCS(s1: Synset, s2: Synset) -> Synset:
   if len(lcs) == 0:
     return None
 
-  #if lcs[0] != g_lcs[0]:
-  #  print('LCS differ: ', lcs, g_lcs)
+  if lcs[0] != g_lcs[0]:
+    print('LCS differ: ', lcs, g_lcs)
+    diff_lcs += 1
 
   #print(f"custom lcs({s1},{s2})={lcs[0]}")
   return lcs[0]
@@ -67,7 +65,10 @@ def distance_to_hypernym(s: Synset, hp: Synset, min_distance=np.inf, curr_distan
     if hypernym == hp and curr_distance+1 < min_distance:
       min_distance = curr_distance + 1
     
-    min_distance = min(min_distance, distance_to_hypernym(hypernym, hp, min_distance, curr_distance+1))
+    min_distance = min(
+      min_distance, 
+      distance_to_hypernym(hypernym, hp, min_distance, curr_distance+1)
+    )
   
   return min_distance
 
@@ -101,16 +102,9 @@ def synsets_distance(s1: Synset, s2: Synset):
 
     print()
 
+  #return nltk_dist
   return custom_dist
-
-def path_len(s1: Synset, s2: Synset, lcs:Synset=None):
-  if not lcs:
-    lcs = find_LCS(s1, s2)
-    if not lcs:
-      return None
   
-  return synsets_distance(s1, lcs) + synsets_distance(s2, lcs)
-
 def wup_similarity(s1: Synset, s2: Synset):
   lcs = find_LCS(s1, s2)
   if not lcs:
@@ -221,3 +215,4 @@ if __name__ == '__main__':
   print('Spearman correlation: {:.3f}'.format(spearman_corr(similarities['lch'], norm_similarity)))
 
   print(f'Diverging distances: {wrong_distances}')
+  print(f'Different LCSs: {diff_lcs}')
