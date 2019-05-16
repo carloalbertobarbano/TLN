@@ -93,12 +93,13 @@ def synsets_distance(s1: Synset, s2: Synset):
     print()
     print(f"len({s1},{s2}) = Custom dist: {custom_dist}, nltk dist: {nltk_dist}")
     print(f"dist(s1={s1}, lcs={lcs}) = {dist1}, nltk(s1={s1}, lcs={lcs}) = {s1.shortest_path_distance(lcs)}")
-    print(f"dist(s2={s2}, lcs={lcs}) = {dist2}, nltk(s2={s1}, lcs={lcs}) = {s2.shortest_path_distance(lcs)}")
+    print(f"dist(s2={s2}, lcs={lcs}) = {dist2}, nltk(s2={s2}, lcs={lcs}) = {s2.shortest_path_distance(lcs)}")
 
-    if dist1 == np.inf:
-      pprint(s1.tree(lambda s:s.hypernyms()))
-    elif dist2 == np.inf:
-      pprint(s2.tree(lambda s:s.hypernyms()))
+    if dist1 != s1.shortest_path_distance(lcs):
+      pprint(s1.tree(lambda s:s.hypernyms()+s.instance_hypernyms()))
+
+    if dist2 != s2.shortest_path_distance(lcs):
+      pprint(s2.tree(lambda s:s.hypernyms()+s.instance_hypernyms()))
 
     print()
 
@@ -216,3 +217,10 @@ if __name__ == '__main__':
 
   print(f'Diverging distances: {wrong_distances}')
   print(f'Different LCSs: {diff_lcs}')
+
+
+  a = [1,2,3,4,5,6]
+  b = a[::-1] #[1,2,3,4,5,6]
+
+  print(f"pearson({a}, {b}): {pearson_corr(a,b)}")
+  print(f"spearman({a}, {b}): {spearman_corr(a,b)}")
