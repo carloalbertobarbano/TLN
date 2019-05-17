@@ -220,7 +220,7 @@ if __name__ == '__main__':
 
 
   a = [1,2,3,4,5,6]
-  b = a[::-1] #[1,2,3,4,5,6]
+  b = a[::-1]
 
   print(f"pearson({a}, {b}): {pearson_corr(a,b)}")
   print(f"spearman({a}, {b}): {spearman_corr(a,b)}")
