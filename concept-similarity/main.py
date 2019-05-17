@@ -152,7 +152,7 @@ def cov(X, Y):
 def pearson_corr(X, Y):
   return cov(X, Y) / (np.std(X)*np.std(Y))
 
-def spearman_corr(X, Y, num_bins=-1):
+def spearman_corr(X, Y, num_bins=10):
   X = np.array(X)
   Y = np.array(Y)
 
