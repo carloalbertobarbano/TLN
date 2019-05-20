@@ -22,4 +22,4 @@ def loadNasari(path):
 
 if __name__ == '__main__':
   nasari = loadNasari('./dd-small-nasari-15.txt')
-  print(nasari['Pussy'])
+  print(nasari['Year'])
