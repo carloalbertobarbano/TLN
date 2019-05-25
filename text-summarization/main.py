@@ -1,4 +1,7 @@
-def loadNasari(path):
+from typing import List
+import argparse
+
+def load_nasari(path):
   with open(path, 'r') as file:
     lines = file.readlines()
 
@@ -19,7 +22,28 @@ def loadNasari(path):
 
   return nasari
 
+def load_text(path):
+  with open(path, 'r') as file:
+    lines = file.readlines()
+  lines = list(filter(lambda line: not line.startswith('#') and line.strip(), lines))
+  return lines
+
+def summarize_text(paragraphs: List[str], compression=10):
+  return paragraphs
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-i', help='input file path', type=str)
+parser.add_argument('-o', help='output path', type=str)
+parser.add_argument('-c', help='compression rate', type=int, default=10)
 
 if __name__ == '__main__':
-  nasari = loadNasari('./dd-small-nasari-15.txt')
-  print(nasari['Year'])
+  args = parser.parse_args()
+
+  nasari = load_nasari('./dd-small-nasari-15.txt')
+  text = load_text(args.i)
+  summarized_text = summarize_text(text, args.c)
+
+  with open(args.o, 'w') as file:
+    for paragraph in summarized_text:
+      file.write(paragraph)
+      file.write('\n')
