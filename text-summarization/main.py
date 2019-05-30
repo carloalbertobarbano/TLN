@@ -6,7 +6,9 @@ import numpy as np
 from scipy.stats import rankdata
 import argparse
 
-def load_nasari(path):
+np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
+
+def load_nasari(path, case_sensitive=True):
   with open(path, 'r') as file:
     lines = file.readlines()
 
@@ -17,6 +19,9 @@ def load_nasari(path):
   for vec in lines:
     babel_id = vec[0]
     word = vec[1]
+    if not case_sensitive:
+      word = word.lower()
+
     synsets = filter(lambda s: s and s.strip(), vec[2:])
     if word not in nasari:
       nasari[word] = []
@@ -38,13 +43,15 @@ def load_text(path):
   ))
   return lines
 
-def create_context(words: List[str], nasari):
-  context = [(w, nasari[w]) for w in words if w in nasari]
-  return context
+def create_context(words: List[str], nasari, case_sensitive=True):
+  if case_sensitive:
+   return [(w, nasari[w.capitalize()]) for w in words if w.capitalize() in nasari][:10]
+  else:
+   return [(w.lower(), nasari[w.lower()]) for w in words if w.lower() in nasari][:10] 
 
 def remove_stopwords(words: List[str]):
   stopwords = nltk.corpus.stopwords.words('english')
-  return list(filter(lambda word: word.replace('.', '') not in stopwords, words))
+  return list(filter(lambda word: word.replace('.', '').lower() not in stopwords, words))
 
 def rank_paragraphs_by_keywords(keywords: List[str], paragraphs: List[str]):
   return list(map(
@@ -56,13 +63,15 @@ def remove_punctuation(string):
   chars = '.,:;!?()”“…'
   for c in chars:
     string = string.replace(c, '')
+  string = string.replace("’s", '')
+  string = string.replace("-", " ")
   return string
 
 def find_most_frequent_words(paragraph: str):
-  words = remove_stopwords(set(remove_punctuation(paragraph).split(' ')))
+  words = remove_stopwords(set(map(lambda w: w.strip(), remove_punctuation(paragraph).lower().split(' '))))
+  words = sorted(words)
   freqs = map(lambda w: (w, paragraph.lower().count(w.lower())), words)
   freqs = filter(lambda freq: len(freq[0]) > 3, freqs)
-
   return sorted(freqs, key=lambda f: f[1], reverse=True)#[:50]
 
 def weighted_overlap(v1: Dict[str, float], v2: Dict[str, float]):
@@ -101,20 +110,55 @@ def similarity(w1, w2):
   #  print(f'WO between {w1[0]} and {w2[0]}: {max} (intersection: {intersect})')
   return max
 
-def rank_paragraphs_by_wo(context, paragraphs: List[str], nasari):
+def rank_paragraphs_by_wo(context, paragraphs: List[str], nasari, case_sensitive):
   ranks = []
   for paragraph in paragraphs:
     rank = 0
     for w2 in paragraph.split(' '):
-      if w2.capitalize() in nasari:
-        rank += sum([similarity(w1, (w2, nasari[w2.capitalize()])) for w1 in context])
+      if case_sensitive:
+        w2 = w2.capitalize()
+
+      if w2 in nasari:
+        rank += sum([similarity(w1, (w2, nasari[w2])) for w1 in context])
     ranks.append(rank)
   return ranks
 
 def word_count(paragraphs: List[str]):
   return sum([len(p.split(' ')) for p in paragraphs])
 
-def summarize_text(paragraphs: List[str], nasari, compression=10):
+def rank_paragraphs_by_cohesion(words_to_exclude: List[str], paragraphs: List[str]):
+  # Count co-occurences of names (i.e. people, cities) excluding words common to all paragraphs
+  occurences = []
+  ranks = [0] * len(paragraphs)
+
+  words_to_exclude = list(map(lambda w: w.lower(), words_to_exclude))
+  #print("Words to exclude:", words_to_exclude)
+
+  for paragraph in paragraphs:
+    words = remove_punctuation(paragraph).split(' ')
+    names = filter(
+      lambda word: word[0].isupper() and word.lower() not in words_to_exclude and len(word) > 3, 
+      words
+    )
+    names = remove_stopwords(names)
+    occurences.append(names)
+  
+  #print("Relevant words in paragraphs:")
+  #pprint(occurences)
+
+  for i in range(len(paragraphs)-1):
+    #for j in range(len(paragraphs)):
+    j = i+1
+    #for j in range(len(paragraphs)):
+    #  if i != j:
+    intersection = set(occurences[i]).intersection(set(occurences[j]))
+    #print(f"Intersection between [{i}] and [{j}]:", intersection)
+    ranks[i] = len(intersection) #max(ranks[i], len(intersection))
+    #if j == len(paragraph)-1:
+    ranks[j] += len(intersection)
+  return ranks
+
+def summarize_text(paragraphs: List[str], nasari, compression=10, ranking='wowo', case_sensitive=True):
   title, body = paragraphs[0], paragraphs[1:]
 
   num_words = word_count(body)
@@ -128,30 +172,62 @@ def summarize_text(paragraphs: List[str], nasari, compression=10):
     print(f'\n\nIteration {i}')
     print(f'Number of paragraphs: {len(body)}')
     freq_words = find_most_frequent_words(' '.join(body))
-    print(f'Most common words in body:', freq_words)
+    #print(f'Most common words in body (top 10):')
+    #pprint(freq_words[:10])
 
-    context = create_context(np.array(freq_words)[:, 0], nasari)
+    context = create_context(np.array(freq_words)[:, 0], nasari, case_sensitive)
     #pprint(context)
-    print("Words in context:", np.array(context)[:, 0])
+    print("Words in context:")
+    pprint(np.array(context)[:, 0])
+
+    #Rank paragraph with Weighted Overlap with context
+    wo_ranks = rank_paragraphs_by_wo(context, body, nasari, case_sensitive)
+    wo_ranks = np.array(wo_ranks)
 
     #Keywords from title
-    print("Using title for keywords:", title)
     keywords = remove_stopwords(title.split(' '))
-    print("Filtered keywords (no stopwords):", keywords)
 
-    wo_ranks = rank_paragraphs_by_wo(context, body, nasari)
-    #keyword_ranks = rank_paragraphs_by_keywords(keywords, body)
-    keyword_ranks = rank_paragraphs_by_wo(create_context(keywords, nasari), body, nasari)
-    tot_ranks = np.array(wo_ranks) + np.array(keyword_ranks)
+    keyword_ranks = []
+
+    if ranking == 'wowo':
+      print('Ranking paragraphs by WO with title. Context from title:')
+      title_context = create_context(keywords, nasari, case_sensitive)
+      pprint(np.array(title_context)[:, 0])
+      keyword_ranks = rank_paragraphs_by_wo(title_context, body, nasari, case_sensitive)
+    elif ranking == 'wokw':
+
+      print("Ranking paragraphs by # of keywords in title:", title)
+      print("Filtered keywords (no stopwords):")
+      pprint(keywords)
+      keyword_ranks = rank_paragraphs_by_keywords(keywords, body)
+    else:
+      print(f'Uknown ranking method {ranking}')
+      exit(1)
+    keyword_ranks = np.array(keyword_ranks)
+
+    #Rank paragraphs by cohesion
+    cohesion_ranks = np.array(rank_paragraphs_by_cohesion(keywords, body))
 
     print("WO ranks for paragraphs: ", wo_ranks)
-    print("Keyword ranks:", keyword_ranks)
+    print("Title ranks:", keyword_ranks)
+
+    tot_ranks = wo_ranks + keyword_ranks
     print('Combined ranks: ', tot_ranks)
-    print('Best paragraph:', np.argmax(tot_ranks))
-    print('Lowest paragraph:', np.argmin(tot_ranks))
+
+    print("Cohesion ranks: ", cohesion_ranks)
+    tot_ranks += cohesion_ranks
+    print("Total ranks:", tot_ranks)
+
+    min_paragraphs = np.where(cohesion_ranks == cohesion_ranks.min())
+    print('Lowest paragraphs based on cohesion: ', min_paragraphs)
+    print('Worst paragraph: ', np.argmin(tot_ranks))
+
+    #print('Best paragraph:', np.argmax(tot_ranks))
+    #print('Lowest paragraph:', np.argmin(tot_ranks))
 
     #Drop paragraph with lowest combined score
     index = np.argmin(tot_ranks)
+    print("Removing paragraph", body[index][:40] + "..")
     del body[index]
     num_words = word_count(body)
     i += 1
@@ -163,14 +239,16 @@ parser.add_argument('-i', help='input file path', type=str)
 parser.add_argument('-o', help='output path', type=str)
 parser.add_argument('-c', help='compression rate', type=int, default=10)
 parser.add_argument('-n', help='nasari path', type=str, default='./dd-small-nasari-15.txt')
+parser.add_argument('--ranking', help='wowo or wokw', type=str, default='wokw')
+parser.add_argument('--case_insensitive', help='load nasari as case insensitive', action="store_true", dest="case_insensitive", default=False)
 
 if __name__ == '__main__':
   args = parser.parse_args()
 
-  nasari = load_nasari(args.n)
+  nasari = load_nasari(args.n, not args.case_insensitive)
   #print("NASARI[power]:", nasari['power'])
   text = load_text(args.i)
-  summarized_text = summarize_text(text, nasari, args.c)
+  summarized_text = summarize_text(text, nasari, args.c, args.ranking, not args.case_insensitive)
 
   with open(args.o, 'w') as file:
     for paragraph in summarized_text:
