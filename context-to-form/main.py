@@ -1,4 +1,7 @@
 import nltk
+import spacy
+
+nlp = spacy.load('en_core_web_sm')
 
 def load_defs(path):
   with open(path, 'r') as file:
@@ -17,9 +20,12 @@ def load_defs(path):
 def find_form(definitions):
   for definition in definitions:
     # 1. PoS tagging
-    text = nltk.word_tokenize(definition)
-    tags = nltk.pos_tag(text)
-    print(tags)
+    text = nlp(definition)
+    for token in text:
+      print(token, token.dep_)
+    #text = nltk.word_tokenize(definition)
+    #tags = nltk.pos_tag(text)
+    #print(text)
 
     # 2. Estrarre SUBJ con relativi ADJ e OBJ
     # 3. Ricavare SUBJ principale (es. più ricorrente, o iperonimo soggetti?)
