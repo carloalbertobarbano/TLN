@@ -1,0 +1,601 @@
+-------- Terms: w1=disturbo bipolare w2=problema
+	Sense for w1: bn:00010593n - Gloss: A mental disorder characterized by episodes of mania and depression
+	Sense for w2: bn:00048242n - Gloss: A state of difficulty that needs to be resolved
+	Similarity: 2.97
+	Hand-score: 1.5
+
+-------- Terms: w1=acido w2=base
+	Sense for w1: bn:00000902n - Gloss: Any of various water-soluble compounds having a sour taste and capable of turning litmus red and reacting with a base to form a salt
+	Sense for w2: bn:00002771n - Gloss: Any of various water-soluble compounds capable of turning litmus blue and reacting with an acid to form a salt and water
+	Similarity: 3.97
+	Hand-score: 2.0
+
+-------- Terms: w1=zero assoluto w2=vapore
+	Sense for w1: bn:00000453n - Gloss: (cryogenics) the lowest temperature theoretically attainable (at which the kinetic energy of atoms and molecules is minimal); 0 Kelvin or -273.15 centigrade or -459.67 Fahrenheit
+	Sense for w2: bn:00080637n - Gloss: Water in a vaporous form diffused in the atmosphere but below boiling temperature
+	Similarity: 3.65
+	Hand-score: 0.0
+
+-------- Terms: w1=rivoluzione verde w2=vernice
+	Sense for w1: bn:03594063n - Gloss: The Green Revolution refers to a set of research and the development of technology transfer initiatives occurring between the 1930s and the late 1960s, that increased agricultural production worldwide, particularly in the developing world, beginning most markedly in the late 1960s.
+	Sense for w2: bn:00079613n - Gloss: A coating that provides a hard, lustrous, transparent finish to a surface
+	Similarity: 2.83
+	Hand-score: 0.0
+
+-------- Terms: w1=sistema operativo w2=deep learning
+	Sense for w1: bn:00059123n - Gloss: (computer science) software that controls the execution of computer programs and may provide various services
+	Sense for w2: bn:02601968n - Gloss: Deep learning is part of a broader family of machine learning methods based on learning data representations, as opposed to task-specific algorithms.
+	Similarity: 3.38
+	Hand-score: 1.0
+
+-------- Terms: w1=olimpiadi internazionali di matematica w2=teoria
+	Sense for w1: bn:03701756n - Gloss: The International Mathematical Olympiad is an annual six-problem mathematical olympiad for pre-college students, and is the oldest of the International Science Olympiads.
+	Sense for w2: bn:00045632n - Gloss: A tentative insight into the natural world; a concept that is not yet verified but that if true would explain certain facts or phenomena
+	Similarity: 2.96
+	Hand-score: 1.0
+
+-------- Terms: w1=el niño w2=equatore
+	Sense for w1: bn:00030030n - Gloss: (oceanography) a warm ocean current that flows along the equator from the date line and south off the coast of Ecuador at Christmas time
+	Sense for w2: bn:00031294n - Gloss: An imaginary line around the Earth forming the great circle that is equidistant from the north and south poles
+	Similarity: 3.35
+	Hand-score: 1.2
+
+-------- Terms: w1=distintivo w2=vetro
+	Sense for w1: bn:00062448n - Gloss: A small slender (often pointed) piece of wood or metal used to support or fasten or attach things
+	Sense for w2: bn:00040605n - Gloss: A brittle transparent solid with irregular atomic structure
+	Similarity: 3.11
+	Hand-score: 0.0
+
+-------- Terms: w1=dimora w2=scultore
+	Sense for w1: bn:00042667n - Gloss: A large and imposing house
+	Sense for w2: bn:00069924n - Gloss: A three-dimensional work of plastic art
+	Similarity: 2.96
+	Hand-score: 0.5
+
+-------- Terms: w1=atmosfera w2=ozono
+	Sense for w1: bn:00002185n - Gloss: A mixture of gases (especially oxygen) required for breathing; the stuff that the wind consists of
+	Sense for w2: bn:00060040n - Gloss: A colorless gas (O3) soluble in alkalis and cold water; a strong oxidizing agent; can be produced by electric discharge in oxygen or by the action of ultraviolet radiation on oxygen in the stratosphere (where it acts as a screen for ultraviolet radiation)
+	Similarity: 3.72
+	Hand-score: 2.0
+
+-------- Terms: w1=scudo w2=brocchiero
+	Sense for w1: bn:00013602n - Gloss: Armor carried on the arm to intercept blows
+	Sense for w2: bn:00013602n - Gloss: Armor carried on the arm to intercept blows
+	Similarity: 4.00
+	Hand-score: 4.0
+
+-------- Terms: w1=moneta w2=pagamento
+	Sense for w1: bn:00016448n - Gloss: Money in the form of bills or coins
+	Sense for w2: bn:00061119n - Gloss: A sum of money paid or a claim discharged
+	Similarity: 3.83
+	Hand-score: 2.8
+
+-------- Terms: w1=avena w2=campo
+	Sense for w1: bn:00007439n - Gloss: Oats
+	Sense for w2: bn:00034265n - Gloss: A piece of land cleared of trees and usually enclosed
+	Similarity: 3.59
+	Hand-score: 2.0
+
+-------- Terms: w1=monaco w2=croce
+	Sense for w1: bn:00055633n - Gloss: Asceticism as a form of religious life; usually conducted in a community under a common rule and characterized by celibacy and poverty and obedience
+	Sense for w2: bn:00127634n - Gloss: Cruciform means having the shape of a cross or Christian cross.
+	Similarity: 3.44
+	Hand-score: 1.8
+
+-------- Terms: w1=cannoniera w2=costa
+	Sense for w1: bn:00042239n - Gloss: A small shallow-draft boat carrying mounted guns; used by costal patrols
+	Sense for w2: bn:00071235n - Gloss: The land along the edge of a body of water
+	Similarity: 3.10
+	Hand-score: 1.0
+
+-------- Terms: w1=roccia w2=miniera
+	Sense for w1: bn:00068046n - Gloss: Material consisting of the aggregate of minerals like those making up the Earth's crust
+	Sense for w2: bn:00055114n - Gloss: Excavation in the earth from which ores and minerals are extracted
+	Similarity: 3.46
+	Hand-score: 2.0
+
+-------- Terms: w1=leggenda w2=morale
+	Sense for w1: bn:00032591n - Gloss: A story about mythical or supernatural beings or events
+	Sense for w2: bn:00050794n - Gloss: The significance of a story or event
+	Similarity: 3.19
+	Hand-score: 1.5
+
+-------- Terms: w1=campione w2=vincitore
+	Sense for w1: bn:15948556n - Gloss: The Champ is an 1931 American Pre-Code film starring Wallace Beery and Jackie Cooper, and directed by King Vidor from a screenplay by Frances Marion, Leonard Praskins and Wanda Tuchock.
+	Sense for w2: bn:03655783n - Gloss: The Winner is a 1996 film, directed by Alex Cox and written by Wendy Riss based on her play A Darker Purpose.
+	Similarity: 3.45
+	Hand-score: 4.0
+
+-------- Terms: w1=dado w2=cubo
+	Sense for w1: bn:00024258n - Gloss: A hexahedron with six equal squares as faces
+	Sense for w2: bn:00024258n - Gloss: A hexahedron with six equal squares as faces
+	Similarity: 4.00
+	Hand-score: 3.8
+
+-------- Terms: w1=topologia w2=struttura
+	Sense for w1: bn:00003800n - Gloss: The branch of pure mathematics that deals only with the properties of a figure X that hold for every figure into which X can be transformed with a one-to-one correspondence that is continuous in both directions
+	Sense for w2: bn:01049167n - Gloss: In mathematics, a structure on a set is an additional mathematical object that, in some manner, attaches to that set to endow it with some additional meaning or significance.
+	Similarity: 3.80
+	Hand-score: 3.0
+
+-------- Terms: w1=cappella w2=cavo
+	Sense for w1: bn:15478652n - Gloss: Cappella is an Italian Eurodance duo act formed in 1987 by Italian producer Gianfranco Bortolotti.
+	Sense for w2: bn:01583344n - Gloss: Cavo is an American hard rock band from St. Louis, Missouri.
+	Similarity: 3.64
+	Hand-score: 1.0
+
+-------- Terms: w1=flusso di cassa w2=fiume
+	Sense for w1: bn:00016458n - Gloss: The excess of cash revenues over cash outlays in a give period of time (not including non-cash expenses)
+	Sense for w2: bn:00067948n - Gloss: A large natural stream of water (larger than a creek)
+	Similarity: 2.55
+	Hand-score: 0.0
+
+-------- Terms: w1=serial killer w2=assassino
+	Sense for w1: bn:00070599n - Gloss: Someone who murders more than three victims one at a time in a relatively short interval
+	Sense for w2: bn:00032175n - Gloss: Unlawful premeditated killing of a human being by a human being
+	Similarity: 3.88
+	Hand-score: 3.8
+
+-------- Terms: w1=matrice w2=molecola
+	Sense for w1: bn:01600840n - Gloss: In biology, the extracellular matrix is a collection of extracellular molecules secreted by support cells that provides structural and biochemical support to the surrounding cells.
+	Sense for w2: bn:00006815n - Gloss: (nontechnical usage) a tiny piece of anything
+	Similarity: 3.65
+	Hand-score: 0.0
+
+-------- Terms: w1=moda w2=stile
+	Sense for w1: bn:00023619n - Gloss: An interest followed with exaggerated zeal
+	Sense for w2: bn:00032400n - Gloss: A way of expressing something (in language or art or music etc.) that is characteristic of a particular person or group of people or period
+	Similarity: 3.22
+	Hand-score: 3.0
+
+-------- Terms: w1=vessillologia w2=bandiera
+	Sense for w1: bn:00646030n - Gloss: Vexillology is the study of the history, symbolism and usage of flags or, by extension, any interest in flags in general.
+	Sense for w2: bn:00030968n - Gloss: An emblem flown as a symbol of nationality
+	Similarity: 3.96
+	Hand-score: 1.0
+
+-------- Terms: w1=trattato di maastricht w2=europa
+	Sense for w1: bn:01352045n - Gloss: The Maastricht Treaty undertaken to integrate Europe was signed on 7 February 1992 by the members of the European Community in Maastricht, Netherlands.
+	Sense for w2: bn:00021127n - Gloss: An international organization of European countries formed after World War II to reduce trade barriers and increase cooperation among its members
+	Similarity: 3.96
+	Hand-score: 1.9
+
+-------- Terms: w1=geyser w2=sorgente
+	Sense for w1: bn:00040351n - Gloss: A spring that discharges hot water and steam
+	Sense for w2: bn:00036077n - Gloss: A natural flow of ground water
+	Similarity: 3.40
+	Hand-score: 2.0
+
+-------- Terms: w1=saccarosio w2=carboidrato
+	Sense for w1: bn:00068722n - Gloss: A complex carbohydrate found in many plants and used as a sweetening agent
+	Sense for w2: bn:00015853n - Gloss: An essential structural component of living cells and source of energy for animals; includes simple sugars with small molecules as well as macromolecular substances; are classified according to the number of monosaccharide groups they contain
+	Similarity: 3.79
+	Hand-score: 1.8
+
+-------- Terms: w1=spiaggia w2=costa
+	Sense for w1: bn:00009263n - Gloss: An area of sand sloping down to the water of a sea or lake
+	Sense for w2: bn:00071235n - Gloss: The land along the edge of a body of water
+	Similarity: 3.81
+	Hand-score: 3.5
+
+-------- Terms: w1=mercato azionario w2=borsa
+	Sense for w1: bn:00070218n - Gloss: An exchange where security trading is conducted by professional stockbrokers
+	Sense for w2: bn:00070218n - Gloss: An exchange where security trading is conducted by professional stockbrokers
+	Similarity: 4.00
+	Hand-score: 3.5
+
+-------- Terms: w1=tradizione w2=artigianato
+	Sense for w1: bn:00024592n - Gloss: A specific practice of long standing
+	Sense for w2: bn:00023499n - Gloss: Skill in an occupation or trade
+	Similarity: 3.23
+	Hand-score: 2.0
+
+-------- Terms: w1=romanzo w2=scrittore
+	Sense for w1: bn:00058201n - Gloss: An extended fictional work in prose; usually in the form of a story
+	Sense for w2: bn:00007287n - Gloss: Writes (books or stories or articles or the like) professionally (for pay)
+	Similarity: 3.80
+	Hand-score: 2.0
+
+-------- Terms: w1=panino w2=subway
+	Sense for w1: bn:00069164n - Gloss: Two (or more) slices of bread with a filling between them
+	Sense for w2: bn:03345051n - Gloss: Subway is a privately held American fast food restaurant franchise that primarily purveys submarine sandwiches and salads.
+	Similarity: 3.56
+	Hand-score: 1.5
+
+-------- Terms: w1=acustica w2=suono
+	Sense for w1: bn:00000989n - Gloss: The study of the physical properties of sound
+	Sense for w2: bn:00000986n - Gloss: (acoustics) a wave that transmits sound
+	Similarity: 3.85
+	Hand-score: 3.0
+
+-------- Terms: w1=scherma w2=ginnastica
+	Sense for w1: bn:00034059n - Gloss: The art or sport of fighting with swords (especially the use of foils or epees or sabres to score points under a set of rules)
+	Sense for w2: bn:00042326n - Gloss: A sport that involves exercises intended to display strength and balance and agility
+	Similarity: 3.26
+	Hand-score: 2.5
+
+-------- Terms: w1=scrittore w2=regalo
+	Sense for w1: bn:00007287n - Gloss: Writes (books or stories or articles or the like) professionally (for pay)
+	Sense for w2: bn:02345076n - Gloss: Le Cadeau, released in Italy as Il regalo, is a 1982 French and Italian film.
+	Similarity: 2.83
+	Hand-score: 0.0
+
+-------- Terms: w1=bosco w2=tiger woods
+	Sense for w1: bn:00035868n - Gloss: The trees and other plants in a large densely wooded area
+	Sense for w2: bn:03181223n - Gloss: Eldrick Tont "Tiger" Woods is an American professional golfer who is among the most successful golfers of all time.
+	Similarity: 3.08
+	Hand-score: 1.0
+
+-------- Terms: w1=nuvola w2=finestra
+	Sense for w1: bn:02292735n - Gloss: Nuvola is a free software icon set under the GNU LGPL 2.1 license, created by David Vignoni.
+	Sense for w2: bn:00081292n - Gloss: (computer science) a rectangular part of a computer screen that contains a display different from the rest of the screen
+	Similarity: 3.68
+	Hand-score: 1.0
+
+-------- Terms: w1=jpeg w2=pdf
+	Sense for w1: bn:00838809n - Gloss: JPEG is a commonly used method of lossy compression for digital images, particularly for those images produced by digital photography.
+	Sense for w2: bn:01745594n - Gloss: The Portable Document Format is a file format developed in the 1990s to present documents, including text formatting and images, in a manner independent of application software, hardware, and operating systems.
+	Similarity: 3.59
+	Hand-score: 3.0
+
+-------- Terms: w1=regista w2=capo
+	Sense for w1: bn:00032179n - Gloss: A person responsible for the administration of a business
+	Sense for w2: bn:02347758n - Gloss: A director is a person from a group of managers who leads or supervises a particular area of a company, program, or project.
+	Similarity: 3.85
+	Hand-score: 3.0
+
+-------- Terms: w1=tassa w2=brexit
+	Sense for w1: bn:00034084n - Gloss: A piece of land held under the feudal system
+	Sense for w2: bn:14118606n - Gloss: Brexit, short for "Britain's Exit from the European Union", is the prospective withdrawal of the United Kingdom from the European Union.
+	Similarity: 2.90
+	Hand-score: 1.0
+
+-------- Terms: w1=impollinazione w2=stame
+	Sense for w1: bn:00063375n - Gloss: Transfer of pollen from the anther to the stigma of a plant
+	Sense for w2: bn:00073884n - Gloss: The male reproductive organ of a flower
+	Similarity: 3.94
+	Hand-score: 3.0
+
+-------- Terms: w1=videogioco w2=gioco per pc
+	Sense for w1: bn:00021477n - Gloss: A game played against a computer
+	Sense for w2: bn:00021477n - Gloss: A game played against a computer
+	Similarity: 4.00
+	Hand-score: 4.0
+
+-------- Terms: w1=cura w2=operazione chirurgica
+	Sense for w1: bn:00024461n - Gloss: A medicine or therapy that cures disease or relieve pain
+	Sense for w2: bn:00059129n - Gloss: A medical procedure involving an incision with instruments; performed to repair damage or arrest disease in a living body
+	Similarity: 3.40
+	Hand-score: 3.0
+
+-------- Terms: w1=risaia w2=patata
+	Sense for w1: bn:00060141n - Gloss: An irrigated or flooded field where rice is grown
+	Sense for w2: bn:00047481n - Gloss: An edible tuber native to South America; a staple food of Ireland
+	Similarity: 3.55
+	Hand-score: 2.0
+
+-------- Terms: w1=appunti w2=compito
+	Sense for w1: bn:03223016n - Gloss: The clipboard is a data buffer used for short-term data storage and/or data transfer between documents or applications used by cut, copy and paste operations and provided by the operating system.
+	Sense for w2: bn:00894769n - Gloss: In computing, a task is a unit of execution or a unit of work.
+	Similarity: 3.45
+	Hand-score: 2.0
+
+-------- Terms: w1=volpe w2=cellula del sangue
+	Sense for w1: None - Gloss: NONE
+	Sense for w2: None - Gloss: NONE
+	Similarity: 2.00
+	Hand-score: 0.0
+
+-------- Terms: w1=cloruro di sodio w2=sale
+	Sense for w1: bn:00021159n - Gloss: A white crystalline solid consisting mainly of sodium chloride (NaCl)
+	Sense for w2: bn:00021159n - Gloss: A white crystalline solid consisting mainly of sodium chloride (NaCl)
+	Similarity: 4.00
+	Hand-score: 4.0
+
+-------- Terms: w1=reddito w2=qualità della vita
+	Sense for w1: bn:14505599n - Gloss: Income is the consumption and savings opportunity gained by an entity within a specified timeframe, which is generally expressed in monetary terms.
+	Sense for w2: bn:00065542n - Gloss: Your personal satisfaction (or dissatisfaction) with the cultural or intellectual conditions under which you live (as distinct from material comfort)
+	Similarity: 3.33
+	Hand-score: 3.0
+
+-------- Terms: w1=volontà w2=intenzione
+	Sense for w1: bn:16772028n - Gloss: Will, generally, is that faculty of the mind which selects, at the moment of decision, the strongest desire from among the various desires present.
+	Sense for w2: bn:01088660n - Gloss: Intentionality is a philosophical concept and is defined by the Stanford Encyclopedia of Philosophy as "the power of minds to be about, to represent, or to stand for, things, properties and states of affairs".
+	Similarity: 3.72
+	Hand-score: 3.5
+
+-------- Terms: w1=bussola w2=elefante
+	Sense for w1: bn:00070237n - Gloss: A closed litter for one passenger
+	Sense for w2: bn:00030314n - Gloss: Five-toed pachyderm
+	Similarity: 3.13
+	Hand-score: 0.0
+
+-------- Terms: w1=seguito w2=macchina fotografica
+	Sense for w1: bn:01613512n - Gloss: Following is a 1998 British neo-noir crime thriller film written and directed by Christopher Nolan.
+	Sense for w2: bn:03696084n - Gloss: A still camera is a type of camera used to take photographs.
+	Similarity: 2.99
+	Hand-score: 0.0
+
+-------- Terms: w1=film w2=pellicola
+	Sense for w1: bn:00034472n - Gloss: Photographic material consisting of a base of celluloid covered with a photographic emulsion; used to make negatives or transparencies
+	Sense for w2: bn:00034472n - Gloss: Photographic material consisting of a base of celluloid covered with a photographic emulsion; used to make negatives or transparencies
+	Similarity: 4.00
+	Hand-score: 3.8
+
+-------- Terms: w1=sergente w2=pistola
+	Sense for w1: bn:00042248n - Gloss: A noncommissioned officer ranking above a staff sergeant in the marines
+	Sense for w2: bn:00042221n - Gloss: A weapon that discharges a missile at high velocity (especially from a metal tube or barrel)
+	Similarity: 2.89
+	Hand-score: 2.5
+
+-------- Terms: w1=mulino w2=seme
+	Sense for w1: bn:03182991n - Gloss: Nine Men's Morris is a strategy board game for two players dating at least to the Roman Empire.
+	Sense for w2: bn:00874731n - Gloss: A seed is a competitor or team in a sport or other tournament who is given a preliminary ranking for the purposes of the draw.
+	Similarity: 3.54
+	Hand-score: 1.5
+
+-------- Terms: w1=gelato w2=colazione
+	Sense for w1: bn:03257950n - Gloss: Gelato is a style of ice cream that originated in Italy.
+	Sense for w2: bn:00012930n - Gloss: The first meal of the day (usually in the morning)
+	Similarity: 3.69
+	Hand-score: 0.8
+
+-------- Terms: w1=chiave w2=serratura
+	Sense for w1: bn:00048985n - Gloss: Metal device shaped in such a way that when it is inserted into the appropriate lock the lock's mechanism can be rotated
+	Sense for w2: bn:00051771n - Gloss: A fastener fitted to a door or drawer to keep it firmly closed
+	Similarity: 3.93
+	Hand-score: 2.0
+
+-------- Terms: w1=cellulare w2=telefono
+	Sense for w1: bn:00017029n - Gloss: A hand-held mobile radiotelephone for use in an area divided into small sections, each with its own short-range transmitter/receiver
+	Sense for w2: bn:00062020n - Gloss: Electronic equipment that converts sound into electrical signals that can be transmitted over distances and then converts received signals back into sounds
+	Similarity: 3.56
+	Hand-score: 4.0
+
+-------- Terms: w1=scuola materna w2=asilo
+	Sense for w1: bn:00049129n - Gloss: A preschool for children age 4 to 6 to prepare them for primary school
+	Sense for w2: bn:00049129n - Gloss: A preschool for children age 4 to 6 to prepare them for primary school
+	Similarity: 4.00
+	Hand-score: 3.5
+
+-------- Terms: w1=mondo occidentale w2=western union
+	Sense for w1: bn:00080927n - Gloss: The modern culture of western Europe and North America
+	Sense for w2: bn:03363271n - Gloss: Western Union is a 1941 American Western film directed by Fritz Lang and starring Robert Young, Randolph Scott, and Dean Jagger.
+	Similarity: 2.95
+	Hand-score: 0.3
+
+-------- Terms: w1=piantina w2=foglia
+	Sense for w1: bn:00070270n - Gloss: Young plant or tree grown from a seed
+	Sense for w2: bn:00035596n - Gloss: The main organ of photosynthesis and transpiration in higher plants
+	Similarity: 3.79
+	Hand-score: 3.1
+
+-------- Terms: w1=pioggia w2=grandine
+	Sense for w1: bn:00066032n - Gloss: Water falling in drops from vapor condensed in the atmosphere
+	Sense for w2: bn:00042519n - Gloss: Precipitation of ice pellets when there are strong rising air currents
+	Similarity: 3.66
+	Hand-score: 3.7
+
+-------- Terms: w1=felicità w2=tristezza
+	Sense for w1: bn:00042905n - Gloss: Emotions experienced when in a state of well-being
+	Sense for w2: bn:00068782n - Gloss: Emotions experienced when not in a state of well-being
+	Similarity: 3.67
+	Hand-score: 3.5
+
+-------- Terms: w1=baco da seta w2=bruco
+	Sense for w1: bn:00071605n - Gloss: The commercially bred hairless white caterpillar of the domestic silkworm moth which spins a cocoon that can be processed to yield silk fiber; the principal source of commercial silk
+	Sense for w2: bn:00015281n - Gloss: Green caterpillar of a geometrid moth; pest of various fruit and shade trees
+	Similarity: 4.00
+	Hand-score: 3.8
+
+-------- Terms: w1=surf w2=sport acquatico
+	Sense for w1: None - Gloss: NONE
+	Sense for w2: None - Gloss: NONE
+	Similarity: 2.00
+	Hand-score: 3.8
+
+-------- Terms: w1=macchina w2=camion
+	Sense for w1: bn:00007309n - Gloss: A motor vehicle with four wheels; usually propelled by an internal combustion engine
+	Sense for w2: bn:00056059n - Gloss: An automotive vehicle suitable for hauling
+	Similarity: 3.70
+	Hand-score: 3.7
+
+-------- Terms: w1=cibo w2=programma
+	Sense for w1: bn:00035649n - Gloss: Any substance that can be metabolized by an animal to give energy and build tissue
+	Sense for w2: bn:00064646n - Gloss: A system of projects or services intended to meet a public need
+	Similarity: 2.96
+	Hand-score: 1.0
+
+-------- Terms: w1=romanzo a fumetti w2=fumetto
+	Sense for w1: bn:00143485n - Gloss: A graphic novel is a book made up of comics content. Although the word "novel" normally refers to long fictional works, the term "graphic novel" is applied broadly and includes fiction, non-fiction, and anthologized work.
+	Sense for w2: bn:00020927n - Gloss: A magazine devoted to comic strips
+	Similarity: 3.95
+	Hand-score: 4.0
+
+-------- Terms: w1=serpente w2=lucertola
+	Sense for w1: bn:00070627n - Gloss: A constellation in the equatorial region of the northern hemisphere near Ophiuchus and Corona Borealis
+	Sense for w2: bn:01397780n - Gloss: Lacerta is one of the 88 modern constellations defined by the International Astronomical Union.
+	Similarity: 3.94
+	Hand-score: 3.8
+
+-------- Terms: w1=ananas w2=smartphone
+	Sense for w1: bn:00003817n - Gloss: A tropical American plant bearing a large fleshy edible fruit with a terminal tuft of stiff leaves; widely cultivated in the tropics
+	Sense for w2: bn:00909458n - Gloss: A smartphone is a handheld personal computer with a mobile operating system and an integrated mobile broadband cellular network connection for voice, SMS, and Internet data communication; most if not all smartphones also support Wi-Fi.
+	Similarity: 2.68
+	Hand-score: 0.0
+
+-------- Terms: w1=sfondo del desktop w2=sfondo
+	Sense for w1: bn:16052021n - Gloss: A wallpaper or background is a digital image 
+	Sense for w2: bn:16052021n - Gloss: A wallpaper or background is a digital image 
+	Similarity: 4.00
+	Hand-score: 0.8
+
+-------- Terms: w1=celsius w2=microsoft
+	Sense for w1: bn:00003943n - Gloss: Swedish astronomer who devised the centigrade thermometer (1701-1744)
+	Sense for w2: bn:02195086n - Gloss: Metro is a design language created by Microsoft.
+	Similarity: 2.71
+	Hand-score: 0.0
+
+-------- Terms: w1=mietitrebbia w2=canna da zucchero
+	Sense for w1: bn:01819332n - Gloss: The modern combine harvester, or simply combine, is a versatile machine designed to efficiently harvest a variety of grain crops.
+	Sense for w2: bn:00068723n - Gloss: Tall tropical southeast Asian grass having stout fibrous jointed stalks; sap is a chief source of sugar
+	Similarity: 3.51
+	Hand-score: 0.8
+
+-------- Terms: w1=jeans w2=donna
+	Sense for w1: bn:02071330n - Gloss: Jeans is a surname.
+	Sense for w2: bn:00709806n - Gloss: Donna is an English-language feminine first name meaning "woman" in Italian.
+	Similarity: 3.48
+	Hand-score: 1.8
+
+-------- Terms: w1=matrice w2=vettore
+	Sense for w1: bn:00005869n - Gloss: An orderly arrangement
+	Sense for w2: bn:00005869n - Gloss: An orderly arrangement
+	Similarity: 4.00
+	Hand-score: 3.9
+
+-------- Terms: w1=anidride carbonica w2=co2
+	Sense for w1: bn:00015867n - Gloss: A heavy odorless colorless gas formed during respiration and by the decomposition of organic substances; absorbed from the air by plants in photosynthesis
+	Sense for w2: bn:00015867n - Gloss: A heavy odorless colorless gas formed during respiration and by the decomposition of organic substances; absorbed from the air by plants in photosynthesis
+	Similarity: 4.00
+	Hand-score: 4.0
+
+-------- Terms: w1=allenatore w2=giocatore
+	Sense for w1: bn:03787052n - Gloss: Game trainers are programs made to modify memory of a computer game thereby modifying its behavior using addresses and values, in order to allow cheating.
+	Sense for w2: bn:00060799n - Gloss: A person who participates in or is skilled at some game
+	Similarity: 3.69
+	Hand-score: 3.8
+
+-------- Terms: w1=sasso w2=legno
+	Sense for w1: bn:00068045n - Gloss: A lump or mass of hard consolidated mineral matter
+	Sense for w2: bn:00081492n - Gloss: The hard fibrous lignified substance under the bark of trees
+	Similarity: 3.16
+	Hand-score: 2.9
+
+-------- Terms: w1=caricabatteria w2=disco
+	Sense for w1: bn:00009069n - Gloss: A device for charging or recharging batteries
+	Sense for w2: bn:00027456n - Gloss: (computer science) a memory device consisting of a flat disk covered with a magnetic coating on which information is stored
+	Similarity: 3.18
+	Hand-score: 1.0
+
+-------- Terms: w1=manoscritto w2=articolo
+	Sense for w1: bn:00044453n - Gloss: Handwritten book or document
+	Sense for w2: bn:00006121n - Gloss: Nonfictional prose forming an independent part of a publication
+	Similarity: 3.28
+	Hand-score: 2.0
+
+-------- Terms: w1=gmail w2=yahoo
+	Sense for w1: bn:03378109n - Gloss: Gmail is a free, advertising-supported email service developed by Google.
+	Sense for w2: bn:00081801n - Gloss: A widely used search engine for the web that finds information, news, images, products, finance
+	Similarity: 3.87
+	Hand-score: 1.9
+
+-------- Terms: w1=condensatore w2=diodo
+	Sense for w1: bn:00015415n - Gloss: An electrical device characterized by its capacity to store an electric charge
+	Sense for w2: bn:00024222n - Gloss: A semiconductor that consists of a p-n junction
+	Similarity: 3.90
+	Hand-score: 3.5
+
+-------- Terms: w1=corruzione w2=frode
+	Sense for w1: bn:00013045n - Gloss: The practice of offering something (usually money) in order to gain an illicit advantage
+	Sense for w2: bn:00036292n - Gloss: Intentional deception resulting in injury to another person
+	Similarity: 3.38
+	Hand-score: 3.9
+
+-------- Terms: w1=coca cola w2=coca
+	Sense for w1: bn:00020229n - Gloss: Coca Cola is a trademarked cola
+	Sense for w2: bn:00020229n - Gloss: Coca Cola is a trademarked cola
+	Similarity: 4.00
+	Hand-score: 0.5
+
+-------- Terms: w1=platone w2=aristotele
+	Sense for w1: bn:00062910n - Gloss: Ancient Athenian philosopher; pupil of Socrates; teacher of Aristotle (428-347 BC)
+	Sense for w2: bn:00005674n - Gloss: One of the greatest of the ancient Athenian philosophers; pupil of Plato; teacher of Alexander the Great (384-322 BC)
+	Similarity: 3.82
+	Hand-score: 3.9
+
+-------- Terms: w1=guerra fredda w2=unione sovietica
+	Sense for w1: bn:00020564n - Gloss: A state of political hostility that existed from 1945 until 1990 between countries led by the Soviet Union and countries led by the United States
+	Sense for w2: bn:00068619n - Gloss: A former communist country in eastern Europe and northern Asia; established in 1922; included Russia and 14 other soviet socialist republics (Ukraine and Byelorussia and others); officially dissolved 31 December 1991
+	Similarity: 3.97
+	Hand-score: 2.5
+
+-------- Terms: w1=ugello w2=fluido
+	Sense for w1: bn:00058124n - Gloss: A projecting spout from which a fluid is discharged
+	Sense for w2: bn:00035426n - Gloss: A substance that is fluid at room temperature and pressure
+	Similarity: 3.60
+	Hand-score: 2.8
+
+-------- Terms: w1=fonologia w2=schermo
+	Sense for w1: bn:00062034n - Gloss: The study of the sound system of a given language and the analysis and classification of its phonemes
+	Sense for w2: bn:00027675n - Gloss: An electronic device that represents information in visual form
+	Similarity: 2.84
+	Hand-score: 1.2
+
+-------- Terms: w1=zara w2=leggings
+	Sense for w1: bn:00208437n - Gloss: Zara is a Galician fast fashion retailer based in Arteixo, Galicia.
+	Sense for w2: bn:00439545n - Gloss: Leggings refer to several types of leg coverings.
+	Similarity: 2.96
+	Hand-score: 1.5
+
+-------- Terms: w1=gioco del calcio w2=calcio
+	Sense for w1: bn:00006547n - Gloss: A football game in which two teams of 11 players try to kick or head a ball into the opponents' goal
+	Sense for w2: bn:00006547n - Gloss: A football game in which two teams of 11 players try to kick or head a ball into the opponents' goal
+	Similarity: 4.00
+	Hand-score: 4.0
+
+-------- Terms: w1=germe w2=agente patogeno
+	Sense for w1: bn:00054731n - Gloss: Any organism of microscopic size
+	Sense for w2: bn:00013701n - Gloss: A minute life form (especially a disease-causing bacterium); the term is not in technical use
+	Similarity: 3.95
+	Hand-score: 3.9
+
+-------- Terms: w1=repubblica w2=duca
+	Sense for w1: bn:00853212n - Gloss: De re publica is a dialogue on Roman politics by Cicero, written in six books between 54 and 51 BC.
+	Sense for w2: bn:01870789n - Gloss: Among the Lombards, the duke or dux was the man who acted as political and military commander of a set of "military families", irrespective of any territorial appropriation.
+	Similarity: 3.37
+	Hand-score: 1.0
+
+-------- Terms: w1=palla w2=sfera
+	Sense for w1: bn:00073310n - Gloss: A solid figure bounded by a spherical surface (including the space it encloses)
+	Sense for w2: bn:00073310n - Gloss: A solid figure bounded by a spherical surface (including the space it encloses)
+	Similarity: 4.00
+	Hand-score: 3.5
+
+-------- Terms: w1=mozart w2=guerre stellari
+	Sense for w1: bn:03224360n - Gloss: Mozart! is an Austrian musical, originally written in German.
+	Sense for w2: bn:17104504n - Gloss: Star Wars is a 1977 American epic space opera film written and directed by George Lucas.
+	Similarity: 2.93
+	Hand-score: 1.0
+
+-------- Terms: w1=maschera w2=festa
+	Sense for w1: bn:00053637n - Gloss: A covering to disguise or conceal the face
+	Sense for w2: bn:00060836n - Gloss: An occasion on which people can assemble for social interaction and entertainment
+	Similarity: 3.40
+	Hand-score: 1.6
+
+-------- Terms: w1=grand theft auto w2=gta
+	Sense for w1: None - Gloss: NONE
+	Sense for w2: None - Gloss: NONE
+	Similarity: 2.00
+	Hand-score: 4.0
+
+-------- Terms: w1=autostrada w2=strada
+	Sense for w1: bn:00044128n - Gloss: A major road for any form of motor transport
+	Sense for w2: bn:00067975n - Gloss: An open way (generally public) for travel or transportation
+	Similarity: 3.86
+	Hand-score: 3.9
+
+-------- Terms: w1=reazione a catena w2=termodinamica
+	Sense for w1: bn:00017506n - Gloss: A self-sustaining nuclear reaction; a series of nuclear fissions in which neutrons released by splitting one atom leads to the splitting of others
+	Sense for w2: bn:00076867n - Gloss: The branch of physics concerned with the conversion of different forms of energy
+	Similarity: 3.45
+	Hand-score: 2.5
+
+-------- Terms: w1=illustrazione w2=vescica
+	Sense for w1: bn:00045772n - Gloss: A visual representation (of an object or scene or person or abstraction) produced on a surface
+	Sense for w2: bn:00011187n - Gloss: (pathology) an elevation of the skin filled with serous fluid
+	Similarity: 2.90
+	Hand-score: 0.0
+
+Correlation between hand_score and similarity:  0.5001719997843007

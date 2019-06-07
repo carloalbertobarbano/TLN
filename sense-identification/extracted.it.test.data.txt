@@ -1,0 +1,100 @@
+disturbo bipolare	problema	1.5
+acido	base	2
+zero assoluto	vapore  0
+rivoluzione verde	vernice 0
+sistema operativo	deep learning   1
+olimpiadi internazionali di matematica	teoria  1
+El Niño	equatore    1.2
+distintivo	vetro   0
+dimora	scultore    0.5
+atmosfera	ozono   2
+scudo	brocchiero  4
+moneta	pagamento   2.8
+avena	campo   2
+monaco	croce   1.8
+cannoniera	costa   1
+roccia	miniera 2
+leggenda	morale  1.5  
+campione	vincitore   4
+dado	cubo    3.8
+topologia	struttura   3
+cappella	cavo    1
+flusso di cassa	fiume   0
+serial killer	assassino   3.8
+matrice	molecola    0
+moda	stile   3
+vessillologia	bandiera    1
+trattato di Maastricht	Europa  1.9
+geyser	sorgente    2
+saccarosio	carboidrato 1.8
+spiaggia	costa   3.5
+mercato azionario	borsa   3.5
+tradizione	artigianato 2
+romanzo	scrittore   2
+panino	Subway  1.5
+acustica	suono   3
+scherma	ginnastica  2.5
+scrittore	regalo  0
+bosco	Tiger Woods 1
+nuvola	finestra    1
+JPEG	PDF 3
+regista	capo    3
+tassa	Brexit  1
+impollinazione	stame  3 
+videogioco	gioco per PC    4
+cura	operazione chirurgica   3
+risaia	patata  2
+appunti	compito 2
+volpe	cellula del sangue  0
+cloruro di sodio	sale    4
+reddito	qualità della vita  3
+volontà	intenzione  3.5
+bussola	elefante    0
+seguito	macchina fotografica    0
+film	pellicola   3.8
+sergente	pistola 2.5
+mulino	seme    1.5
+gelato	colazione   0.8
+chiave	serratura   2
+cellulare	telefono    4
+scuola materna	asilo   3.5
+mondo occidentale	Western Union   0.3
+piantina	foglia  3.1
+pioggia	grandine    3.7
+felicità	tristezza   3.5
+baco da seta	bruco   3.8
+surf	sport acquatico 3.8
+macchina	camion  3.7
+cibo	programma   1
+romanzo a fumetti	fumetto 4
+serpente	lucertola	3.8
+ananas	smartphone  0
+sfondo del desktop	sfondo  0.8
+Celsius	Microsoft 0
+mietitrebbia	canna da zucchero   0.8
+jeans	donna   1.8
+matrice	vettore 3.9
+anidride carbonica	CO2 4
+allenatore	giocatore   3.8
+sasso	legno   2.9
+caricabatteria	disco   1
+manoscritto	articolo    2
+Gmail	Yahoo   1.9
+condensatore	diodo   3.5 
+corruzione	frode   3.9
+Coca Cola	coca    0.5
+Platone	Aristotele  3.9
+guerra fredda	Unione Sovietica    2.5
+ugello	fluido  2.8
+fonologia	schermo 1.2
+Zara	leggings    1.5
+gioco del calcio	calcio  4
+germe	agente patogeno 3.9
+repubblica	duca    1
+palla	sfera   3.5
+Mozart	Guerre stellari 1
+maschera	festa   1.6
+Grand Theft Auto	GTA 4
+autostrada	strada  3.9
+reazione a catena	termodinamica   2.5
+illustrazione	vescica 0
