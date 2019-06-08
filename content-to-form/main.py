@@ -1,15 +1,19 @@
 import nltk
 import spacy
-from nltk.corpus import wordnet
+import spacy_wordnet
 
-nlp = spacy.load('en_core_web_sm')
+from spacy_wordnet.wordnet_annotator import WordnetAnnotator
+#from nltk.corpus import wordnet
+
+nlp = spacy.load('en')
+nlp.add_pipe(WordnetAnnotator(nlp.lang), after='tagger')
 
 def load_defs(path):
   with open(path, 'r') as file:
     lines = file.readlines()
   
   terms = []
-  definitions = []
+  definitions = []  
 
   for line in lines:
     chunks = line.lower().strip().split('\t')
@@ -33,10 +37,13 @@ def find_form(definitions):
     relevant_words = filter(lambda token: token.dep_ in tags, text)
     relevant_words = filter(lambda token: token.text not in stopwords, relevant_words)
     relevant_words = list(relevant_words)
-    print(relevant_words)
+    #print(relevant_words)
 
     # 3. Ricavare SUBJ principale (es. più ricorrente, o iperonimo soggetti?)
-    
+    for token in relevant_words:
+      print(f'WordNet domains for {token}: ')
+      print(token._.wordnet.wordnet_domains())
+      print()
 
     # 4. Synset di iperonimo ricavato
     # 5. Per i figli dell'iperonimo ottenere gloss
