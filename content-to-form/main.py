@@ -3,6 +3,7 @@ import spacy
 import spacy_wordnet
 
 from spacy_wordnet.wordnet_annotator import WordnetAnnotator
+from collections import Counter
 #from nltk.corpus import wordnet
 
 nlp = spacy.load('en')
@@ -24,7 +25,7 @@ def load_defs(path):
 
 def find_form(definitions):
   stopwords = nltk.corpus.stopwords.words('english')
-
+  domains = []
   for definition in definitions:
     # 1. PoS tagging
     text = nlp(definition)
@@ -33,24 +34,31 @@ def find_form(definitions):
     print()
 
     # 2. Estrarre SUBJ con relativi ADJ e OBJ
-    tags = ['nsubj', 'ROOT', 'dobj', 'pobj', 'conj']
-    relevant_words = filter(lambda token: token.dep_ in tags, text)
-    relevant_words = filter(lambda token: token.text not in stopwords, relevant_words)
+    tags = ['nsubj', 'ROOT', 'dobj', 'pobj', 'conj', 'amod']
+    #relevant_words = filter(lambda token: token.dep_ in tags, text)
+    relevant_words = filter(lambda token: token.text not in stopwords, text)
     relevant_words = list(relevant_words)
     #print(relevant_words)
 
     # 3. Ricavare SUBJ principale (es. più ricorrente, o iperonimo soggetti?)
+    
     for token in relevant_words:
       print(f'WordNet domains for {token}: ')
       print(token._.wordnet.wordnet_domains())
+      print('Synets: ', token._.wordnet.synsets())
       print()
+      domains.extend(token._.wordnet.wordnet_domains())
 
     # 4. Synset di iperonimo ricavato
     # 5. Per i figli dell'iperonimo ottenere gloss
     # 6. W.O. delle gloss con definizioni
     # 7. trovare il max
     print()
-  pass
+  
+  counter = Counter(domains)
+  most_common = counter.most_common(10)
+  print(most_common)
+  return most_common[0]
 
 if __name__ == '__main__':
   nltk.download('punkt')
@@ -60,4 +68,10 @@ if __name__ == '__main__':
   terms, definitions = load_defs('esercitazione2.tsv')
   print(f'Term: {terms[0]}, definition[0]: {definitions[0][0]}')
 
-  find_form(definitions[0])
+  forms = []
+  for definition in definitions:
+    forms.append(find_form(definition))
+  
+  print('----------------')
+  for term, form in zip(terms, forms):
+    print(f'Ground: {term} - found: {form[0]}')
