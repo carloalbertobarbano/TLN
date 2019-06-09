@@ -3,13 +3,16 @@ import spacy
 import spacy_wordnet
 import collections
 #import pandas as pd
+import numpy as np
+import json
 
 from spacy_wordnet.wordnet_annotator import WordnetAnnotator
 from collections import Counter
 
 from nltk.corpus import wordnet as wn
 
-nlp = spacy.load("en")
+babelnet_ids = {}
+nlp = spacy.load("en_core_web_md")
 nlp.add_pipe(WordnetAnnotator(nlp.lang), after='tagger')
 #nasari_df = pd.read_csv('./NASARIembed+UMBC_w2v.txt', header=None, sep=' ', skiprows=1)
 
@@ -147,6 +150,7 @@ def find_form_vale_version(term, definitions):
     subject_synset = hyponyms[index_max]
   
   print('Risultato:', subject_synset)
+  return subject_synset
 
 def min_distance(w1, w2):
   s1 = nlp(w1)
@@ -157,24 +161,86 @@ def min_distance(w1, w2):
 def compute_min_distance_sim(context, text):
   return 0
 
-def get_vector(synset):
-  with open('./NASARIembed+UMBC_w2v.txt', 'r') as file:
+nasari = {}
+def load_nasari(path):
+  global nasari
+  with open('./Wiki_NASARI_unified_english.txt', 'r') as file:
+    lines = file.readlines()
+    
+  for line in lines[1:]:
+    id = line.split(' ')[0]
+    v = list(map(lambda s: float(s), line.split(' ')[1:]))
+    nasari[id] = v
+
+def get_vector(bn_id):
+  global nasari
+  if bn_id not in nasari:
+    print(f'{bn_id} not in NASARI')
+    return [0]*300
+  return nasari[bn_id]
+  """global cache
+  if bn_id in cache:
+    return cache[bn_id]
+
+  with open('./Wiki_NASARI_unified_english.txt', 'r') as file:
     for i, line in enumerate(file):
       if i == 0:
         continue
       id = line.split(' ')[0]
-      if synset == id:
-        return list(map(lambda s: float(s), line.split(' ')[1:]))
+      if bn_id == id:
+        res = list(map(lambda s: float(s), line.split(' ')[1:]))
+        cache[bn_id] = res
+        return res"""
+
+def similarity(v1, v2):
+  #TODO W.O instead of cosine similarity
+  v1 = np.array(v1)
+  v2 = np.array(v2)
+  return (v1*v2).sum() / (np.sqrt(np.square(v1).sum())*np.sqrt(np.square(v2).sum()))
 
 words = []
 def compute_overlap_sim(context, text):
+  stopwords = nltk.corpus.stopwords.words('english')
+  print(f'Computing similarity between {context} and {text}')
   global words
   words.extend(context)
   words.extend(map(lambda t: t.text, nlp(text)))
-  return 0
+
+  tot_score = []
+  tokens = list(filter(lambda t: t.text not in stopwords, nlp(text)))
+  for word1 in context:
+    token1 = nlp(word1)[0]
+    for word2 in tokens:
+      sim = token1.similarity(word2)
+      tot_score.append(sim)
+      print(f'Scores for {word1} and {word2.text}: ', sim)
+      continue 
+      s1 = babelnet_ids[word1] #babelnet_ids for word1
+      s2 = babelnet_ids[word2.text] #babelnet_ids for word2
+
+      max_score = 0
+
+      print(f'Scores for {word1} and {word2.text}')
+      for id1 in s1:
+        for id2 in s2:
+          v1 = get_vector(id1)
+          v2 = get_vector(id2)
+
+          sim = similarity(v1, v2)
+          print(f'{id1}-{id2}: {sim}')
+          if sim > max_score:
+            max_score = sim
+      tot_score.append(max_score)
+
+  return sum(tot_score) / (len(context)+len(tokens))
 
 
 if __name__ == '__main__':
+  with open('babelnet_ids.json', 'r') as file:
+    babelnet_ids = json.load(file)
+
+  #load_nasari('Wiki_NASARI_unified_english.txt')
+
   nltk.download('punkt')
   nltk.download('averaged_perceptron_tagger')
   nltk.download('wordnet')
@@ -182,18 +248,20 @@ if __name__ == '__main__':
   terms, definitions = load_defs('esercitazione2.tsv')
   # print(f'Term: {terms[0]}, definition[0]: {definitions[0][0]}')
   
+  forms = []
   #TODO: per ogni coppia termine/definizioni
   for t, d in zip(terms, definitions):
-    find_form_vale_version(t, d)
+    forms.append(find_form_vale_version(t, d))
+
   words = set(words)
   with open('wordlist_babelnet.txt', 'w') as file:
     for w in words:
       file.write(w+'\n')
   
-  # forms = []
+  
   # for definition in definitions:
     # forms.append(find_form_vale_version(definition))
 
-  # print('----------------')
-  # for term, form in zip(terms, forms):
-    # print(f'Ground: {term} - found: {form[0]}')
+  print('---------------- RESULTS -------------------')
+  for term, form in zip(terms, forms):
+    print(f'Ground: {term} - found: {form}')
