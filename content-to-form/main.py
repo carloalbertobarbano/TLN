@@ -2,6 +2,7 @@ import nltk
 import spacy
 import spacy_wordnet
 import collections
+#import pandas as pd
 
 from spacy_wordnet.wordnet_annotator import WordnetAnnotator
 from collections import Counter
@@ -10,6 +11,7 @@ from nltk.corpus import wordnet as wn
 
 nlp = spacy.load("en")
 nlp.add_pipe(WordnetAnnotator(nlp.lang), after='tagger')
+#nasari_df = pd.read_csv('./NASARIembed+UMBC_w2v.txt', header=None, sep=' ', skiprows=1)
 
 def load_defs(path):
   with open(path, 'r') as file:
@@ -104,23 +106,35 @@ def find_form_vale_version(term, definitions):
       else:
         relevant_words.append(token.text)
         # TODO: estende le parole importanti con il loro dominio
+        # relevant_words.extend(token._.wordnet.wordnet_domains())
 
 
   # 4. Synset di iperonimo ricavato ripetere finche punteggio new_hyper_score > old_hyper_score
   old_hyper_score = 0
   new_hyper_score = 0
   target_subject = collections.Counter(subjects).most_common(1)[0][0]
-  subject_synset = wn.synsets(target_subject)[0]
+  print('Most common subject:', target_subject)
+
+  if len(wn.synsets(target_subject)) > 0:
+    subject_synset = wn.synsets(target_subject)[0]
+  else:
+    return None
 
   while new_hyper_score >= old_hyper_score:
     # TODO: forse considerare anche gli altri?
-    print(f'Soggetto: {subject_synset}\n')
+    print(f'\nSoggetto: {subject_synset}')
     hyponyms = subject_synset.hyponyms()
+    print(f'Hyponyms of {subject_synset}:', hyponyms)
+    
+    ## SENZA BREAK SI ROMPE ##
+    if len(hyponyms) == 0:
+      break
 
     # 5. Per i figli dell'iperonimo ottenere gloss
     gloss_hyponyms = map(lambda hyp: (hyp, hyp.definition()), hyponyms)
     scores = []
     for couple in gloss_hyponyms:
+      print(couple)
       # 6. W.O. tra contesto (relevant_words) e parole della gloss
       # TODO: da implementare/importare
       score = compute_overlap_sim(relevant_words, couple[1])
@@ -131,11 +145,34 @@ def find_form_vale_version(term, definitions):
     new_hyper_score = max(scores)
     index_max = scores.index(new_hyper_score)
     subject_synset = hyponyms[index_max]
+  
+  print('Risultato:', subject_synset)
 
+def min_distance(w1, w2):
+  s1 = nlp(w1)
+  s2 = nlp(w2)
 
+  print(s1)
 
-def compute_overlap_sim(context, text):
+def compute_min_distance_sim(context, text):
   return 0
+
+def get_vector(synset):
+  with open('./NASARIembed+UMBC_w2v.txt', 'r') as file:
+    for i, line in enumerate(file):
+      if i == 0:
+        continue
+      id = line.split(' ')[0]
+      if synset == id:
+        return list(map(lambda s: float(s), line.split(' ')[1:]))
+
+words = []
+def compute_overlap_sim(context, text):
+  global words
+  words.extend(context)
+  words.extend(map(lambda t: t.text, nlp(text)))
+  return 0
+
 
 if __name__ == '__main__':
   nltk.download('punkt')
@@ -144,12 +181,19 @@ if __name__ == '__main__':
 
   terms, definitions = load_defs('esercitazione2.tsv')
   # print(f'Term: {terms[0]}, definition[0]: {definitions[0][0]}')
+  
   #TODO: per ogni coppia termine/definizioni
-  find_form_vale_version(terms[1], definitions[1])
+  for t, d in zip(terms, definitions):
+    find_form_vale_version(t, d)
+  words = set(words)
+  with open('wordlist_babelnet.txt', 'w') as file:
+    for w in words:
+      file.write(w+'\n')
+  
   # forms = []
   # for definition in definitions:
-  # forms.append(find_form_vale_version(definition))
+    # forms.append(find_form_vale_version(definition))
 
   # print('----------------')
   # for term, form in zip(terms, forms):
-  # print(f'Ground: {term} - found: {form[0]}')
+    # print(f'Ground: {term} - found: {form[0]}')
