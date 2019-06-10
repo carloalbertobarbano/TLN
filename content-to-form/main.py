@@ -61,13 +61,11 @@ def find_form(term, definitions):
   counter = Counter(domains)
   most_common = counter.most_common(10)
   print("---DOMAINS:", most_common)
-  #print(most_common)
 
   #counter = Counter(synsets)
   #most_common = counter.most_common(10)
   #print(most_common)
 
-  #print('---------- CONTEXT ----------')
   c_counter = Counter(context)
   c_common = c_counter.most_common(15)
   print("---CONTEXT:", c_common)
@@ -206,59 +204,9 @@ def find_form_vale_version(term, definitions):
   print('Risultato:', subject_synset, "Definizione: ", subject_synset.definition(), "Depth:", depth, "\n")
   return subject_synset, depth
 
-def min_distance(w1, w2):
-  s1 = nlp(w1)
-  s2 = nlp(w2)
-
-  print(s1)
-
-def compute_min_distance_sim(context, text):
-  return 0
-
-nasari = {}
-def load_nasari(path):
-  global nasari
-  with open('./Wiki_NASARI_unified_english.txt', 'r') as file:
-    lines = file.readlines()
-    
-  for line in lines[1:]:
-    id = line.split(' ')[0]
-    v = list(map(lambda s: float(s), line.split(' ')[1:]))
-    nasari[id] = v
-
-def get_vector(bn_id):
-  global nasari
-  if bn_id not in nasari:
-    print(f'{bn_id} not in NASARI')
-    return [0]*300
-  return nasari[bn_id]
-  """global cache
-  if bn_id in cache:
-    return cache[bn_id]
-
-  with open('./Wiki_NASARI_unified_english.txt', 'r') as file:
-    for i, line in enumerate(file):
-      if i == 0:
-        continue
-      id = line.split(' ')[0]
-      if bn_id == id:
-        res = list(map(lambda s: float(s), line.split(' ')[1:]))
-        cache[bn_id] = res
-        return res"""
-
-def similarity(v1, v2):
-  #TODO W.O instead of cosine similarity
-  v1 = np.array(v1)
-  v2 = np.array(v2)
-  return (v1*v2).sum() / (np.sqrt(np.square(v1).sum())*np.sqrt(np.square(v2).sum()))
-
-words = []
 def compute_overlap_sim(context, text):
   stopwords = nltk.corpus.stopwords.words('english')
   #print(f'Computing similarity between {context} and {text}')
-  global words
-  words.extend(context)
-  words.extend(map(lambda t: t.text, nlp(text)))
 
   tot_score = []
   tokens = list(filter(lambda t: t.text not in stopwords, nlp(text)))
@@ -267,24 +215,6 @@ def compute_overlap_sim(context, text):
     for word2 in tokens:
       sim = token1.similarity(word2)
       tot_score.append(sim)
-      #print(f'Scores for {word1} and {word2.text}: ', sim)
-      continue
-      s1 = babelnet_ids[word1] #babelnet_ids for word1
-      s2 = babelnet_ids[word2.text] #babelnet_ids for word2
-
-      max_score = 0
-
-      print(f'Scores for {word1} and {word2.text}')
-      for id1 in s1:
-        for id2 in s2:
-          v1 = get_vector(id1)
-          v2 = get_vector(id2)
-
-          sim = similarity(v1, v2)
-          print(f'{id1}-{id2}: {sim}')
-          if sim > max_score:
-            max_score = sim
-      tot_score.append(max_score)
 
   return sum(tot_score) / (len(context)+len(tokens))
 
@@ -315,8 +245,6 @@ if __name__ == '__main__':
   with open('babelnet_ids.json', 'r') as file:
     babelnet_ids = json.load(file)
 
-  #load_nasari('Wiki_NASARI_unified_english.txt')
-
   nltk.download('punkt')
   nltk.download('averaged_perceptron_tagger')
   nltk.download('wordnet')
@@ -326,7 +254,6 @@ if __name__ == '__main__':
     index = int(sys.argv[1])
     terms = [terms[index]]
     definitions = [definitions[index]]
-  #print(f'Term: {terms[0]}, definition[0]: {definitions[0][0]}')
   
   forms1 = []
   forms2 = []
@@ -334,12 +261,6 @@ if __name__ == '__main__':
   for t, d in zip(terms, definitions):
     forms1.append(find_form(t, d))
     forms2.append(find_form_vale_version(t, d))
-
-  #words = set(words)
-  #with open('wordlist_babelnet.txt', 'w') as file:
-  #  for w in words:
-  #    file.write(w+'\n')
-  
 
   print('---------------- RESULTS -------------------')
   for i, (form1, form2) in enumerate(zip(forms1, forms2)):
@@ -355,12 +276,6 @@ if __name__ == '__main__':
       best_synset = select_best_synset_by_defs((synset1, synset2), definitions[i])
 
     print(f'Ground: {terms[i]}\t\t - Found: {best_synset} \t\t [s1: {(synset1, depth1)} s2: {(synset2, depth2)}]')
-    
-    #print(f'Ground: {terms[i]}\t- Found(1): {forms[i][0]}\t- Found(2): {forms2approach[i][0]}')
-    #if forms[i][1] >= forms2approach[i][1]:
-    #  print(f'Ground: {terms[i]} - Found: {forms[i][0]}')
-    #else:
-    #  print(f'Ground: {terms[i]} - Found: {forms2approach[i][0]}')
 
 
 
