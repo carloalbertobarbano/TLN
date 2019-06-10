@@ -89,16 +89,17 @@ def find_form(term, definitions):
 
   best_synset = None
   best_score = 0
+  best_level = 0
 
   context = list(map(lambda c: c[0], c_common))
   context = nlp(' '.join(context))
 
   for lemma in most_common:
     print(f'Exploring domain "{lemma[0]}"')
-    synset, score = find_most_similar_synset(wn.synsets(lemma[0]),
-                                             context,
-                                             lower_bound=best_score,
-                                             verbose=False)
+    synset, score, level = find_most_similar_synset(wn.synsets(lemma[0]),
+                                                    context,
+                                                    lower_bound=best_score,
+                                                    verbose=False)
     print(f'Best score: {score} with synset {synset}')
     if synset:
       print(synset.definition())
@@ -106,11 +107,12 @@ def find_form(term, definitions):
     if score > best_score:
       best_synset = synset
       best_score = score
+      best_level = level
 
-  return best_synset
+  return best_synset, best_level
   return most_common[0]
 
-def find_most_similar_hyponym(synset, context, level=0, lower_bound=0, verbose=False):
+def find_most_similar_hyponym(synset, context, level=1, lower_bound=0, verbose=False):
   definition = synset.definition()
   if verbose:
     print('-'*level + f'Level {level}, synset: {synset}')
@@ -121,25 +123,28 @@ def find_most_similar_hyponym(synset, context, level=0, lower_bound=0, verbose=F
 
   best_hyponym = synset
   best_score = definition.similarity(context) #compute_overlap_sim(context, definition)
-  if best_score <= lower_bound:
-    return best_hyponym, best_score
+  best_level = level
+  if best_score < lower_bound:
+    return best_hyponym, best_score, best_level-1
 
   for hyponym in synset.hyponyms():
-    syn, score = find_most_similar_hyponym(hyponym, context, level+1, best_score, verbose)
+    syn, score, c_level = find_most_similar_hyponym(hyponym, context, level+1, best_score, verbose)
     if score > best_score:
       best_hyponym = syn
       best_score = score
+      best_level = c_level
 
-  return best_hyponym, best_score
+  return best_hyponym, best_score, best_level
 
 def find_most_similar_synset(synsets, context, lower_bound=0, verbose=False, recursive=True):
   best_synset = None
   best_score = 0
+  level = 1
 
   for synset in synsets:
-    synset, score = synset, 0
+    synset, score, c_level = synset, 0, level
     if recursive:
-      synset, score = find_most_similar_hyponym(synset, context, lower_bound=lower_bound, verbose=verbose)
+      synset, score, c_level = find_most_similar_hyponym(synset, context, lower_bound=lower_bound, verbose=verbose)
     else:
       definition = nlp(synset.definition())
       definition = nlp(' '.join([str(t) for t in definition if not t.is_stop]))
@@ -148,7 +153,8 @@ def find_most_similar_synset(synsets, context, lower_bound=0, verbose=False, rec
     if score > best_score:
       best_synset = synset
       best_score = score
-  return best_synset, best_score
+      level = c_level
+  return best_synset, best_score, level
 
 def find_form_vale_version(term, definitions):
   stopwords = nltk.corpus.stopwords.words('english')
@@ -313,7 +319,7 @@ if __name__ == '__main__':
   forms = []
   #TODO: per ogni coppia termine/definizioni
   for t, d in zip(terms, definitions):
-    forms.append(find_form_vale_version(t, d))
+    forms.append(find_form(t, d))
 
   words = set(words)
   with open('wordlist_babelnet.txt', 'w') as file:
