@@ -12,7 +12,7 @@ from collections import Counter
 from nltk.corpus import wordnet as wn
 
 babelnet_ids = {}
-nlp = spacy.load("en_core_web_md")
+nlp = spacy.load("en_core_web_lg")
 nlp.add_pipe(WordnetAnnotator(nlp.lang), after='tagger')
 #nasari_df = pd.read_csv('./NASARIembed+UMBC_w2v.txt', header=None, sep=' ', skiprows=1)
 
@@ -44,9 +44,10 @@ def find_form(term, definitions):
     #print()
 
     # 2. Estrarre SUBJ con relativi ADJ e OBJ
-    tags = ['nsubj', 'ROOT', 'dobj', 'pobj', 'conj', 'amod']
+    #tags = ['nsubj', 'ROOT', 'dobj', 'pobj', 'conj', 'amod']
+    tags = ['ROOT', 'dobj', 'pobj', 'amod', 'NOUN', 'ADJ']
     exclude_tags = '.,:;!?()”“…'
-    #relevant_words = filter(lambda token: token.dep_ in tags, text)
+    subjs = filter(lambda token: token.dep_ in tags, text)
     relevant_words = filter(lambda token: token.text not in stopwords, text)
     relevant_words = filter(lambda token: token.text not in exclude_tags, relevant_words)
     relevant_words = list(relevant_words)
@@ -54,7 +55,7 @@ def find_form(term, definitions):
     #print(relevant_words)
 
     # 3. Ricavare SUBJ principale (es. più ricorrente, o iperonimo soggetti?)
-    
+    domains.extend(list(map(lambda t: t.text, subjs)))
     for token in relevant_words:
       #print(f'WordNet domains for {token}: ')
       #print(token._.wordnet.wordnet_domains())
@@ -81,7 +82,7 @@ def find_form(term, definitions):
 
   #print('---------- CONTEXT ----------')
   c_counter = Counter(context)
-  c_common = c_counter.most_common(20)
+  c_common = c_counter.most_common(15)
   print("---CONTEXT:", c_common)
   print()
 
@@ -130,12 +131,19 @@ def find_most_similar_hyponym(synset, context, level=0, lower_bound=0, verbose=F
 
   return best_hyponym, best_score
 
-def find_most_similar_synset(synsets, context, lower_bound=0, verbose=False):
+def find_most_similar_synset(synsets, context, lower_bound=0, verbose=False, recursive=True):
   best_synset = None
   best_score = 0
 
   for synset in synsets:
-    synset, score = find_most_similar_hyponym(synset, context, lower_bound=lower_bound, verbose=verbose)
+    synset, score = synset, 0
+    if recursive:
+      synset, score = find_most_similar_hyponym(synset, context, lower_bound=lower_bound, verbose=verbose)
+    else:
+      definition = nlp(synset.definition())
+      definition = nlp(' '.join([str(t) for t in definition if not t.is_stop]))
+      score = definition.similarity(context)
+
     if score > best_score:
       best_synset = synset
       best_score = score
@@ -147,7 +155,7 @@ def find_form_vale_version(term, definitions):
   relevant_words = []
   subjects = []
 
-  print(f'Termine target: {term}\n')
+  print(f'\nTermine target: {term}\n')
 
   for definition in definitions:
     # 1. PoS tagging
@@ -176,7 +184,7 @@ def find_form_vale_version(term, definitions):
   if len(wn.synsets(target_subject)) > 0:
     synset_list = wn.synsets(target_subject)
     context = nlp(' '.join(relevant_words))
-    subject_synset = find_most_similar_synset(synset_list, context)[0]
+    subject_synset = find_most_similar_synset(synset_list, context, recursive=False)[0]
   else:
     # da valutare
     return target_subject
