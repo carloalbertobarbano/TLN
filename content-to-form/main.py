@@ -12,6 +12,8 @@ from collections import Counter
 
 from nltk.corpus import wordnet as wn
 
+import sys
+
 babelnet_ids = {}
 nlp = spacy.load("en_core_web_lg")
 nlp.add_pipe(WordnetAnnotator(nlp.lang), after='tagger')
@@ -168,6 +170,7 @@ def find_form_vale_version(term, definitions):
   old_hyper_score = 0
   new_hyper_score = 0
   target_subject = collections.Counter(subjects).most_common(1)[0][0]
+  subject_synset = None
   print('Most common subject:', target_subject)
 
   if len(wn.synsets(target_subject)) > 0:
@@ -179,7 +182,7 @@ def find_form_vale_version(term, definitions):
     return target_subject
 
   depth = 1
-  while new_hyper_score >= old_hyper_score:
+  while subject_synset and new_hyper_score >= old_hyper_score:
     hyponyms = subject_synset.hyponyms()
     if len(hyponyms) == 0:
       break
@@ -319,6 +322,10 @@ if __name__ == '__main__':
   nltk.download('wordnet')
 
   terms, definitions = load_defs('esercitazione2.tsv')
+  if len(sys.argv) > 1:
+    index = int(sys.argv[1])
+    terms = [terms[index]]
+    definitions = [definitions[index]]
   #print(f'Term: {terms[0]}, definition[0]: {definitions[0][0]}')
   
   forms1 = []
