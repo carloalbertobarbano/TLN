@@ -12,7 +12,7 @@ from collections import Counter
 from nltk.corpus import wordnet as wn
 
 babelnet_ids = {}
-nlp = spacy.load("en_core_web_lg")
+nlp = spacy.load("en_core_web_md")
 nlp.add_pipe(WordnetAnnotator(nlp.lang), after='tagger')
 #nasari_df = pd.read_csv('./NASARIembed+UMBC_w2v.txt', header=None, sep=' ', skiprows=1)
 
@@ -45,7 +45,7 @@ def find_form(term, definitions):
 
     # 2. Estrarre SUBJ con relativi ADJ e OBJ
     #tags = ['nsubj', 'ROOT', 'dobj', 'pobj', 'conj', 'amod']
-    tags = ['ROOT', 'dobj', 'pobj', 'amod', 'NOUN', 'ADJ']
+    tags = ['ROOT', 'ADJ']
     exclude_tags = '.,:;!?()”“…'
     subjs = filter(lambda token: token.dep_ in tags, text)
     relevant_words = filter(lambda token: token.text not in stopwords, text)
@@ -82,7 +82,7 @@ def find_form(term, definitions):
 
   #print('---------- CONTEXT ----------')
   c_counter = Counter(context)
-  c_common = c_counter.most_common(15)
+  c_common = c_counter.most_common(20)
   print("---CONTEXT:", c_common)
   print()
 
