@@ -29,7 +29,7 @@ def load_defs(path):
     definitions.append(chunks[1:])
   return terms, definitions
 
-def find_form(definitions):
+def find_form(term, definitions):
   stopwords = nltk.corpus.stopwords.words('english')
 
   domains = []
@@ -72,19 +72,74 @@ def find_form(definitions):
   
   counter = Counter(domains)
   most_common = counter.most_common(10)
+  print("---DOMAINS:", most_common)
   #print(most_common)
 
-  counter = Counter(synsets)
-  most_common = counter.most_common(10)
+  #counter = Counter(synsets)
+  #most_common = counter.most_common(10)
   #print(most_common)
 
-  print('---------- CONTEXT ----------')
+  #print('---------- CONTEXT ----------')
   c_counter = Counter(context)
-  c_common = c_counter.most_common(10)
-  print(c_common)
+  c_common = c_counter.most_common(20)
+  print("---CONTEXT:", c_common)
   print()
 
+  best_synset = None
+  best_score = 0
+
+  context = list(map(lambda c: c[0], c_common))
+  context = nlp(' '.join(context))
+
+  for lemma in most_common:
+    print(f'Exploring domain "{lemma[0]}"')
+    synset, score = find_most_similar_synset(wn.synsets(lemma[0]), 
+                                             context,
+                                             lower_bound=best_score,
+                                             verbose=False)
+    print(f'Best score: {score} with synset {synset}')
+    if synset:
+      print(synset.definition())
+    print()
+    if score > best_score:
+      best_synset = synset
+      best_score = score
+                                    
+  return best_synset
   return most_common[0]
+
+def find_most_similar_hyponym(synset, context, level=0, lower_bound=0, verbose=False):
+  definition = synset.definition()
+  if verbose:
+    print('-'*level + f'Level {level}, synset: {synset}')
+    print('-'*level + f'Definition: {definition}')
+  
+  definition = nlp(definition)
+  definition = nlp(' '.join([str(t) for t in definition if not t.is_stop]))
+
+  best_hyponym = synset
+  best_score = definition.similarity(context) #compute_overlap_sim(context, definition)
+  if best_score <= lower_bound:
+    return best_hyponym, best_score
+
+  for hyponym in synset.hyponyms():
+    syn, score = find_most_similar_hyponym(hyponym, context, level+1, best_score, verbose)
+    if score > best_score:
+      best_hyponym = syn
+      best_score = score
+  
+  return best_hyponym, best_score
+
+def find_most_similar_synset(synsets, context, lower_bound=0, verbose=False):
+  best_synset = None
+  best_score = 0
+
+  for synset in synsets:
+    synset, score = find_most_similar_hyponym(synset, context, lower_bound=lower_bound, verbose=verbose)
+    if score > best_score:
+      best_synset = synset
+      best_score = score
+  return best_synset, best_score
 
 def find_form_vale_version(term, definitions):
   stopwords = nltk.corpus.stopwords.words('english')
@@ -123,11 +178,13 @@ def find_form_vale_version(term, definitions):
   else:
     return None
 
+  level = 0
   while new_hyper_score >= old_hyper_score:
+    print('|' + '_'*level + str(subject_synset))
     # TODO: forse considerare anche gli altri?
-    print(f'\nSoggetto: {subject_synset}')
+    #print(f'\nSoggetto: {subject_synset}')
     hyponyms = subject_synset.hyponyms()
-    print(f'Hyponyms of {subject_synset}:', hyponyms)
+    #print(f'Hyponyms of {subject_synset}:', hyponyms)
     
     ## SENZA BREAK SI ROMPE ##
     if len(hyponyms) == 0:
@@ -137,7 +194,7 @@ def find_form_vale_version(term, definitions):
     gloss_hyponyms = map(lambda hyp: (hyp, hyp.definition()), hyponyms)
     scores = []
     for couple in gloss_hyponyms:
-      print(couple)
+      #print(couple)
       # 6. W.O. tra contesto (relevant_words) e parole della gloss
       # TODO: da implementare/importare
       score = compute_overlap_sim(relevant_words, couple[1])
@@ -148,6 +205,7 @@ def find_form_vale_version(term, definitions):
     new_hyper_score = max(scores)
     index_max = scores.index(new_hyper_score)
     subject_synset = hyponyms[index_max]
+    level += 1
   
   print('Risultato:', subject_synset)
   return subject_synset
@@ -201,7 +259,7 @@ def similarity(v1, v2):
 words = []
 def compute_overlap_sim(context, text):
   stopwords = nltk.corpus.stopwords.words('english')
-  print(f'Computing similarity between {context} and {text}')
+  #print(f'Computing similarity between {context} and {text}')
   global words
   words.extend(context)
   words.extend(map(lambda t: t.text, nlp(text)))
@@ -213,8 +271,8 @@ def compute_overlap_sim(context, text):
     for word2 in tokens:
       sim = token1.similarity(word2)
       tot_score.append(sim)
-      print(f'Scores for {word1} and {word2.text}: ', sim)
-      continue 
+      #print(f'Scores for {word1} and {word2.text}: ', sim)
+      continue
       s1 = babelnet_ids[word1] #babelnet_ids for word1
       s2 = babelnet_ids[word2.text] #babelnet_ids for word2
 
@@ -251,7 +309,7 @@ if __name__ == '__main__':
   forms = []
   #TODO: per ogni coppia termine/definizioni
   for t, d in zip(terms, definitions):
-    forms.append(find_form_vale_version(t, d))
+    forms.append(find_form(t, d))
 
   words = set(words)
   with open('wordlist_babelnet.txt', 'w') as file:
