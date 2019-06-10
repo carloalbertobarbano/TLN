@@ -2,6 +2,8 @@ import numpy as np
 import copy
 from pprint import pprint
 
+import sys
+
 def parse_grammar(file):
   with open(file, 'r') as f:
     lines = f.readlines()
@@ -134,18 +136,21 @@ def transfer(src):
   
   return res
 
-cfg = parse_grammar('G1.cfg')
-print(cfg)
+if __name__ == '__main__':
+  sentence = sys.argv[1]
 
-matrix = CKY(cfg, 'tu avrai novecento anni di età')
+  cfg = parse_grammar('G1.cfg')
+  print(cfg)
 
-S = matrix[0, -1][0]
-S.print_sentence()
-print()
+  matrix = CKY(cfg, sentence)
 
-tag_svx(S, ['S -> S VX', 'VP -> V X'])
-print(repr(S))
+  S = matrix[0, -1][0]
+  S.print_sentence()
+  print()
 
-res = transfer(S)
-print(repr(res))
-res.print_sentence()
+  tag_svx(S, ['S -> S VX', 'VP -> V X'])
+  print(repr(S))
+
+  res = transfer(S)
+  print(repr(res))
+  res.print_sentence()
