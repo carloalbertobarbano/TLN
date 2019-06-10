@@ -5,7 +5,8 @@ import collections
 #import pandas as pd
 import numpy as np
 import json
-
+import warnings
+warnings.filterwarnings('ignore')
 from spacy_wordnet.wordnet_annotator import WordnetAnnotator
 from collections import Counter
 
@@ -155,7 +156,7 @@ def find_form_vale_version(term, definitions):
   relevant_words = []
   subjects = []
 
-  print(f'\nTermine target: {term}\n')
+  print(f'\nTermine target: {term}')
 
   for definition in definitions:
     # 1. PoS tagging
@@ -180,7 +181,6 @@ def find_form_vale_version(term, definitions):
   target_subject = collections.Counter(subjects).most_common(1)[0][0]
   print('Most common subject:', target_subject)
 
-  # TODO: forse considerare anche gli altri?
   if len(wn.synsets(target_subject)) > 0:
     synset_list = wn.synsets(target_subject)
     context = nlp(' '.join(relevant_words))
@@ -189,14 +189,9 @@ def find_form_vale_version(term, definitions):
     # da valutare
     return target_subject
 
-  level = 0
+  depth = 1
   while new_hyper_score >= old_hyper_score:
-    #print('|' + '_'*level + str(subject_synset))
-    #print(f'\nSoggetto: {subject_synset}')
     hyponyms = subject_synset.hyponyms()
-    #print(f'Hyponyms of {subject_synset}:', hyponyms)
-    
-    ## SENZA BREAK SI ROMPE  -> giusto! se non ci sono iponimi ritorni l'ultimo trovato ##
     if len(hyponyms) == 0:
       break
 
@@ -214,10 +209,10 @@ def find_form_vale_version(term, definitions):
     new_hyper_score = max(scores)
     index_max = scores.index(new_hyper_score)
     subject_synset = hyponyms[index_max]
-    level += 1
+    depth += 1
 
-  print('Risultato:', subject_synset)
-  return subject_synset
+  print('Risultato:', subject_synset, "Definizione: ", subject_synset.definition(), "Depth:", depth)
+  return subject_synset, depth
 
 def min_distance(w1, w2):
   s1 = nlp(w1)
