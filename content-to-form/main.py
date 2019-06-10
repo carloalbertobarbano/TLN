@@ -93,7 +93,7 @@ def find_form(term, definitions):
 
   for lemma in most_common:
     print(f'Exploring domain "{lemma[0]}"')
-    synset, score = find_most_similar_synset(wn.synsets(lemma[0]), 
+    synset, score = find_most_similar_synset(wn.synsets(lemma[0]),
                                              context,
                                              lower_bound=best_score,
                                              verbose=False)
@@ -104,7 +104,7 @@ def find_form(term, definitions):
     if score > best_score:
       best_synset = synset
       best_score = score
-                                    
+
   return best_synset
   return most_common[0]
 
@@ -113,7 +113,7 @@ def find_most_similar_hyponym(synset, context, level=0, lower_bound=0, verbose=F
   if verbose:
     print('-'*level + f'Level {level}, synset: {synset}')
     print('-'*level + f'Definition: {definition}')
-  
+
   definition = nlp(definition)
   definition = nlp(' '.join([str(t) for t in definition if not t.is_stop]))
 
@@ -127,7 +127,7 @@ def find_most_similar_hyponym(synset, context, level=0, lower_bound=0, verbose=F
     if score > best_score:
       best_hyponym = syn
       best_score = score
-  
+
   return best_hyponym, best_score
 
 def find_most_similar_synset(synsets, context, lower_bound=0, verbose=False):
@@ -164,8 +164,7 @@ def find_form_vale_version(term, definitions):
       else:
         relevant_words.append(token.text)
         # TODO: estende le parole importanti con il loro dominio
-        # relevant_words.extend(token._.wordnet.wordnet_domains())
-
+        # relevant_words.extend(filter(lambda tok: tok not in stopwords, token._.wordnet.wordnet_domains()))
 
   # 4. Synset di iperonimo ricavato ripetere finche punteggio new_hyper_score > old_hyper_score
   old_hyper_score = 0
@@ -173,20 +172,23 @@ def find_form_vale_version(term, definitions):
   target_subject = collections.Counter(subjects).most_common(1)[0][0]
   print('Most common subject:', target_subject)
 
+  # TODO: forse considerare anche gli altri?
   if len(wn.synsets(target_subject)) > 0:
-    subject_synset = wn.synsets(target_subject)[0]
+    synset_list = wn.synsets(target_subject)
+    context = nlp(' '.join(relevant_words))
+    subject_synset = find_most_similar_synset(synset_list, context)[0]
   else:
-    return None
+    # da valutare
+    return target_subject
 
   level = 0
   while new_hyper_score >= old_hyper_score:
-    print('|' + '_'*level + str(subject_synset))
-    # TODO: forse considerare anche gli altri?
+    #print('|' + '_'*level + str(subject_synset))
     #print(f'\nSoggetto: {subject_synset}')
     hyponyms = subject_synset.hyponyms()
     #print(f'Hyponyms of {subject_synset}:', hyponyms)
     
-    ## SENZA BREAK SI ROMPE ##
+    ## SENZA BREAK SI ROMPE  -> giusto! se non ci sono iponimi ritorni l'ultimo trovato ##
     if len(hyponyms) == 0:
       break
 
@@ -194,9 +196,8 @@ def find_form_vale_version(term, definitions):
     gloss_hyponyms = map(lambda hyp: (hyp, hyp.definition()), hyponyms)
     scores = []
     for couple in gloss_hyponyms:
-      #print(couple)
+      print(couple)
       # 6. W.O. tra contesto (relevant_words) e parole della gloss
-      # TODO: da implementare/importare
       score = compute_overlap_sim(relevant_words, couple[1])
       scores.append(score)
 
@@ -206,7 +207,7 @@ def find_form_vale_version(term, definitions):
     index_max = scores.index(new_hyper_score)
     subject_synset = hyponyms[index_max]
     level += 1
-  
+
   print('Risultato:', subject_synset)
   return subject_synset
 
@@ -309,7 +310,7 @@ if __name__ == '__main__':
   forms = []
   #TODO: per ogni coppia termine/definizioni
   for t, d in zip(terms, definitions):
-    forms.append(find_form(t, d))
+    forms.append(find_form_vale_version(t, d))
 
   words = set(words)
   with open('wordlist_babelnet.txt', 'w') as file:
