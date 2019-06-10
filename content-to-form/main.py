@@ -15,7 +15,6 @@ from nltk.corpus import wordnet as wn
 babelnet_ids = {}
 nlp = spacy.load("en_core_web_lg")
 nlp.add_pipe(WordnetAnnotator(nlp.lang), after='tagger')
-#nasari_df = pd.read_csv('./NASARIembed+UMBC_w2v.txt', header=None, sep=' ', skiprows=1)
 
 def load_defs(path):
   with open(path, 'r') as file:
@@ -40,9 +39,6 @@ def find_form(term, definitions):
   for definition in definitions:
     # 1. PoS tagging
     text = nlp(definition)
-    #for token in text:
-    #  print(f'{token}[{token.dep_}] ', end='', flush=True)
-    #print()
 
     # 2. Estrarre SUBJ con relativi ADJ e OBJ
     #tags = ['nsubj', 'ROOT', 'dobj', 'pobj', 'conj', 'amod']
@@ -52,25 +48,13 @@ def find_form(term, definitions):
     relevant_words = filter(lambda token: token.text not in stopwords, text)
     relevant_words = filter(lambda token: token.text not in exclude_tags, relevant_words)
     relevant_words = list(relevant_words)
-    #context.extend(relevant_words)
-    #print(relevant_words)
 
     # 3. Ricavare SUBJ principale (es. più ricorrente, o iperonimo soggetti?)
     domains.extend(list(map(lambda t: t.text, subjs)))
     for token in relevant_words:
-      #print(f'WordNet domains for {token}: ')
-      #print(token._.wordnet.wordnet_domains())
-      #print('Synets: ', token._.wordnet.synsets())
-      #print()
       domains.extend(token._.wordnet.wordnet_domains())
       synsets.extend(token._.wordnet.synsets())
       context.append(token.text)
-
-    # 4. Synset di iperonimo ricavato
-    # 5. Per i figli dell'iperonimo ottenere gloss
-    # 6. W.O. delle gloss con definizioni
-    # 7. trovare il max
-    #print()
   
   counter = Counter(domains)
   most_common = counter.most_common(10)
@@ -83,7 +67,7 @@ def find_form(term, definitions):
 
   #print('---------- CONTEXT ----------')
   c_counter = Counter(context)
-  c_common = c_counter.most_common(20)
+  c_common = c_counter.most_common(15)
   print("---CONTEXT:", c_common)
   print()
 
@@ -110,7 +94,6 @@ def find_form(term, definitions):
       best_level = level
 
   return best_synset, best_level
-  return most_common[0]
 
 def find_most_similar_hyponym(synset, context, level=1, lower_bound=0, verbose=False):
   definition = synset.definition()
@@ -302,6 +285,28 @@ def compute_overlap_sim(context, text):
 
   return sum(tot_score) / (len(context)+len(tokens))
 
+def sentence_similarity(s1, s2):
+  s1 = nlp(s1)
+  s1 = nlp(' '.join([str(t) for t in s1 if not t.is_stop]))
+
+  s2 = nlp(s2)
+  s2 = nlp(' '.join([str(t) for t in s2 if not t.is_stop]))
+
+  return s1.similarity(s2)
+
+def select_best_synset_by_defs(synsets, definitions):
+  best_synset = None
+  best_score = 0
+
+  for synset in synsets:
+    curr_score = 0
+    for definition in definitions:
+      curr_score += sentence_similarity(synset.definition(), definition)
+
+    if curr_score > best_score:
+      best_synset = synset
+      best_score = curr_score
+  return best_synset
 
 if __name__ == '__main__':
   with open('babelnet_ids.json', 'r') as file:
@@ -314,30 +319,39 @@ if __name__ == '__main__':
   nltk.download('wordnet')
 
   terms, definitions = load_defs('esercitazione2.tsv')
-  # print(f'Term: {terms[0]}, definition[0]: {definitions[0][0]}')
+  #print(f'Term: {terms[0]}, definition[0]: {definitions[0][0]}')
   
-  forms = []
-  forms2approach = []
+  forms1 = []
+  forms2 = []
   #TODO: per ogni coppia termine/definizioni
   for t, d in zip(terms, definitions):
-    forms.append(find_form(t, d))
-    forms2approach.append(find_form_vale_version(t, d))
+    forms1.append(find_form(t, d))
+    forms2.append(find_form_vale_version(t, d))
 
-  words = set(words)
-  with open('wordlist_babelnet.txt', 'w') as file:
-    for w in words:
-      file.write(w+'\n')
+  #words = set(words)
+  #with open('wordlist_babelnet.txt', 'w') as file:
+  #  for w in words:
+  #    file.write(w+'\n')
   
-  
-  # for definition in definitions:
-    # forms.append(find_form_vale_version(definition))
 
   print('---------------- RESULTS -------------------')
-  for i in range(0, len(forms)):
-    if forms[i][1] >= forms2approach[i][1]:
-      print(f'Ground: {terms[i]} - Found: {forms[i][0]}')
-    else:
-      print(f'Ground: {terms[i]} - Found: {forms2approach[i][0]}')
+  for i, (form1, form2) in enumerate(zip(forms1, forms2)):
+    synset1, depth1 = form1
+    synset2, depth2 = form2
+    best_synset = synset1
+    if depth2 > depth1:
+      best_synset = synset2
+
+    if depth1 == depth2:
+      best_synset = select_best_synset_by_defs((synset1, synset2), definitions[i])
+
+    print(f'Ground: {terms[i]}\t\t - Found: {best_synset} \t\t [s1: {(synset1, depth1)} s2: {(synset2, depth2)}]')
+    
+    #print(f'Ground: {terms[i]}\t- Found(1): {forms[i][0]}\t- Found(2): {forms2approach[i][0]}')
+    #if forms[i][1] >= forms2approach[i][1]:
+    #  print(f'Ground: {terms[i]} - Found: {forms[i][0]}')
+    #else:
+    #  print(f'Ground: {terms[i]} - Found: {forms2approach[i][0]}')
 
 
 
