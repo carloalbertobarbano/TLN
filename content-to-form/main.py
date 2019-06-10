@@ -13,7 +13,7 @@ from collections import Counter
 from nltk.corpus import wordnet as wn
 
 babelnet_ids = {}
-nlp = spacy.load("en_core_web_md")
+nlp = spacy.load("en_core_web_lg")
 nlp.add_pipe(WordnetAnnotator(nlp.lang), after='tagger')
 #nasari_df = pd.read_csv('./NASARIembed+UMBC_w2v.txt', header=None, sep=' ', skiprows=1)
 
@@ -217,7 +217,7 @@ def find_form_vale_version(term, definitions):
     subject_synset = hyponyms[index_max]
     depth += 1
 
-  print('Risultato:', subject_synset, "Definizione: ", subject_synset.definition(), "Depth:", depth)
+  print('Risultato:', subject_synset, "Definizione: ", subject_synset.definition(), "Depth:", depth, "\n")
   return subject_synset, depth
 
 def min_distance(w1, w2):
@@ -317,9 +317,11 @@ if __name__ == '__main__':
   # print(f'Term: {terms[0]}, definition[0]: {definitions[0][0]}')
   
   forms = []
+  forms2approach = []
   #TODO: per ogni coppia termine/definizioni
   for t, d in zip(terms, definitions):
     forms.append(find_form(t, d))
+    forms2approach.append(find_form_vale_version(t, d))
 
   words = set(words)
   with open('wordlist_babelnet.txt', 'w') as file:
@@ -331,5 +333,13 @@ if __name__ == '__main__':
     # forms.append(find_form_vale_version(definition))
 
   print('---------------- RESULTS -------------------')
-  for term, form in zip(terms, forms):
-    print(f'Ground: {term} - found: {form}')
+  for i in range(0, len(forms)):
+    if forms[i][1] >= forms2approach[i][1]:
+      print(f'Ground: {terms[i]} - Found: {forms[i][0]}')
+    else:
+      print(f'Ground: {terms[i]} - Found: {forms2approach[i][0]}')
+
+
+
+
+
