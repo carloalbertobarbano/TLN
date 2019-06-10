@@ -345,6 +345,8 @@ if __name__ == '__main__':
   for i, (form1, form2) in enumerate(zip(forms1, forms2)):
     synset1, depth1 = form1
     synset2, depth2 = form2
+    depth1 = synset1.min_depth()
+    depth2 = synset2.min_depth()
     best_synset = synset1
     if depth2 > depth1:
       best_synset = synset2
