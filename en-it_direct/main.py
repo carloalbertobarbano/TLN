@@ -53,10 +53,10 @@ if __name__ == '__main__':
     print('EN:', line.strip())
     
     translation = translator.translate(line, baseline_tagger)
-    logger.info(f'Translation (Base): {translation}')
+    logger.debug(f'Translation (Base): {translation}')
     print('IT (Base):', ' '.join([x[0] for x in translation]))
     
     translation = translator.translate(line, markov_tagger)
-    logger.info(f'Translation (HMM): {translation}')
+    logger.debug(f'Translation (HMM): {translation}')
     print('IT (HMM):', ' '.join([x[0] for x in translation]))
   

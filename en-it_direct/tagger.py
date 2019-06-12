@@ -126,8 +126,8 @@ class MarkovPOSTagger(BaselinePOSTagger):
 
   def get_emission_prob(self, state, token):
     known_prob = self.get_known_emission_prop(state, token)
-    if known_prob == 1.:
-      return 1.
+    #if known_prob == 1.:
+    #  return 1.
 
     if token not in self.p_emission[state]:
       #if token[0].isupper() and state == 'PROPN':
