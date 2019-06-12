@@ -29,6 +29,7 @@ if __name__ == '__main__':
 
   print('Baseline prediction:', baseline_tags)
   print('Markov prediction:', markov_tags)
+  print()
 
   accuracy = baseline_tagger.evaluate(train_set)
   print(f'Baseline - Accuracy on train set: {accuracy:.2f}')
@@ -40,8 +41,7 @@ if __name__ == '__main__':
   accuracy = markov_tagger.evaluate(test_set)
   print(f'HMM - Accuracy on test set: {accuracy:.2f}')
 
-  print('Total number of ADJ:', train_set.tags['ADJ']['count']+test_set.tags['ADJ']['count']+dev_set.tags['ADJ']['count'])
-  
+  print('\n---------------------------------------------\n')  
   translator = Translator('./dict.txt', rules='./rules.txt')
 
   print()

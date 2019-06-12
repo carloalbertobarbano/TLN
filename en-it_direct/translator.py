@@ -24,9 +24,6 @@ class Translator:
         lines = file.readlines()
       
       for line in lines:
-        if line.startswith('#'):
-          target = line[1:].strip()
-          continue
         if not line.strip():
           continue
 
@@ -56,7 +53,7 @@ class Translator:
     tokens = self.tokenize_sentence(sentence)
     tags = tagger.predict(tokens)
 
-    logger.info(' '.join(["{}[{}]".format(x[0],x[1]) for x in list(zip(tokens, tags))]))
+    print(' '.join(["{}[{}]".format(x[0],x[1]) for x in list(zip(tokens, tags))]))
 
     #rules = [(['NOUN', 'PART-\'s', 'NOUN'], [2, 1, 0])]
     for rule in self.rules:

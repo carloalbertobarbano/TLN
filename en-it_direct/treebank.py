@@ -1,4 +1,5 @@
 import coloredlogs, logging
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -31,18 +32,25 @@ class TreeBank:
       
       data = line.strip().split('\t')
       word, tag = data[1], data[3] #word tolower?
+      if tag == '_':
+        continue
       
       if tag not in self.tags:
-        self.tags[tag] = {'count': 0, 
+        self.tags[tag] = {'count': 0., 
                           'emission': {}} 
 
       if word not in self.tags[tag]['emission']:
-        self.tags[tag]['emission'][word] = 0
+        self.tags[tag]['emission'][word] = 0.
 
-      self.tags[tag]['count'] += 1
-      self.tags[tag]['emission'][word] += 1
+      self.tags[tag]['count'] += 1.
+      self.tags[tag]['emission'][word] += 1.
       self.sentences[-1]['tags'].append(tag)
       self.sentences[-1]['tokens'].append(word)
+    
+    for tag in self.tags:
+      for word in self.tags[tag]['emission']:
+        self.tags[tag]['emission'][word] /= self.tags[tag]['count']
+        #self.tags[tag]['emission'][word] = np.log(self.tags[tag]['emission'][word] + 1.)
 
   def __len__(self):
     return len(self.sentences)
