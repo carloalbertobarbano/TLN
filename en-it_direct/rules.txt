@@ -1,3 +1,4 @@
 NOUN PART-'s NOUN	2 1 0
 ADJ NOUN	1 0
 AUX PART	1 0
+VERB-looking ADP-for	0-cercando 1-~

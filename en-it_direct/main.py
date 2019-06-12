@@ -6,7 +6,8 @@ from tagger import BaselinePOSTagger, MarkovPOSTagger
 from translator import Translator
 
 logger = logging.getLogger(__name__)
-coloredlogs.install(level='ERROR')
+
+coloredlogs.install(level='INFO')
 
 if __name__ == '__main__':
   train_set = TreeBank('./UD_English-ParTUT/en_partut-ud-train.conllu')
@@ -40,7 +41,8 @@ if __name__ == '__main__':
   print(f'HMM - Accuracy on test set: {accuracy:.2f}')
 
   print('Total number of ADJ:', train_set.tags['ADJ']['count']+test_set.tags['ADJ']['count']+dev_set.tags['ADJ']['count'])
-  translator = Translator('./dict.txt', markov_tagger, rules='./rules.txt')
+  
+  translator = Translator('./dict.txt', rules='./rules.txt')
 
   print()
   with open('./sentences_to_translate.txt', 'r') as file:
@@ -49,7 +51,12 @@ if __name__ == '__main__':
   for line in lines:
     print('\n----------')
     print('EN:', line.strip())
-    translation = translator.translate(line)
-    logger.info(f'Translation: {translation}')
-    print('IT:', ' '.join([x[0] for x in translation]))
+    
+    translation = translator.translate(line, baseline_tagger)
+    logger.info(f'Translation (Base): {translation}')
+    print('IT (Base):', ' '.join([x[0] for x in translation]))
+    
+    translation = translator.translate(line, markov_tagger)
+    logger.info(f'Translation (HMM): {translation}')
+    print('IT (HMM):', ' '.join([x[0] for x in translation]))
   
