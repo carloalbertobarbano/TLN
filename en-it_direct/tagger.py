@@ -67,12 +67,16 @@ class MarkovPOSTagger(BaselinePOSTagger):
     self.p_transition = {}
     self.treebank = None
 
+    self.smoothing_transition_unknown = 0.1
     self.smoothing_emission_pnoun = 1.
     self.smoothing_emission_unknown = 0.1
 
   def train(self, dataloader: TreeBank):
     super().train(dataloader)
     self.treebank = dataloader
+    
+    self.smoothing_transition_unknown = 1. / len(dataloader.tags.keys())
+    self.smoothing_emission_unknown = 1. / len(dataloader.tags.keys())
 
     for data in dataloader:
       sentence, tags = data
@@ -105,12 +109,13 @@ class MarkovPOSTagger(BaselinePOSTagger):
 
   def get_transition_prob(self, prev_state, state):
     if state not in self.p_transition[prev_state]:
+      return self.smoothing_transition_unknown
       return 0.001
     return self.p_transition[prev_state][state]
 
   def get_known_emission_prop(self, state, token):
     if state == 'DET':
-      dets = ['the', 'a', 'this', 'his', 'their', 'its', 'any', 'us', 'that', 'no']
+      dets = ['the', 'a', 'this', 'these', 'those', 'his', 'their', 'its', 'any', 'us', 'that', 'no']
       if token.lower() in dets:
         return 1. / len(dets)
     elif state == 'PRON':
@@ -127,32 +132,35 @@ class MarkovPOSTagger(BaselinePOSTagger):
     if token not in self.treebank.tags[state]['emission']:
       if token[0].isupper() and state == 'PROPN':
         return self.smoothing_emission_pnoun
-        return 0.00001
       return self.smoothing_emission_unknown 
-      return 0.0000001 
     return self.treebank.tags[state]['emission'][token]
 
   def tune_hyperparams(self, dataloader, vmax=1., vmin=1e-10):
     best_accuracy = 0.
-    best_hyp1 = best_hyp2 = vmax
-    hyp1 = hyp2 = vmax
+    best_hyp1 = best_hyp2  = best_hyp3 = vmax
+    hyp1 = hyp2 = hyp3 = vmax
 
     logger.info(f'Performing grid search for hyperparams [{vmax} - {vmin}]')
     while hyp1 > vmin:
       hyp2 = vmax
       while hyp2 > vmin:
-        self.smoothing_emission_pnoun = hyp1
-        self.smoothing_emission_unknown = hyp2
-        accuracy = self.evaluate(dataloader)
-        if accuracy > best_accuracy:
-          best_accuracy = accuracy
-          best_hyp1, best_hyp2 = hyp1, hyp2
+        hyp3 = vmax
+        while hyp3 > vmin:
+          self.smoothing_emission_pnoun = hyp1
+          self.smoothing_emission_unknown = hyp2
+          self.smoothing_transition_unknown = hyp3
+          accuracy = self.evaluate(dataloader)
+          if accuracy > best_accuracy:
+            best_accuracy = accuracy
+            best_hyp1, best_hyp2, best_hyp3 = hyp1, hyp2, hyp3
+          hyp3 /= 10.
         hyp2 /= 10.
       hyp1 /= 10.
 
-    logger.info(f'Best hyperparams values: hyp1:{best_hyp1} hyp2:{best_hyp2}')
+    logger.info(f'Best hyperparams values: hyp1:{best_hyp1} hyp2:{best_hyp2} hyp3: {best_hyp3}')
     self.smoothing_emission_pnoun = best_hyp1
     self.smoothing_emission_unknown = best_hyp2
+    self.smoothing_transition_unknown = best_hyp3
 
   def predict(self, sentence):
     viterbi = [{}]
