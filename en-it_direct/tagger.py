@@ -67,6 +67,9 @@ class MarkovPOSTagger(BaselinePOSTagger):
     self.p_transition = {}
     self.treebank = None
 
+    self.smoothing_emission_pnoun = 1.
+    self.smoothing_emission_unknown = 0.1
+
   def train(self, dataloader: TreeBank):
     super().train(dataloader)
     self.treebank = dataloader
@@ -123,9 +126,33 @@ class MarkovPOSTagger(BaselinePOSTagger):
 
     if token not in self.treebank.tags[state]['emission']:
       if token[0].isupper() and state == 'PROPN':
-        return 0.00001       
+        return self.smoothing_emission_pnoun
+        return 0.00001
+      return self.smoothing_emission_unknown 
       return 0.0000001 
     return self.treebank.tags[state]['emission'][token]
+
+  def tune_hyperparams(self, dataloader, vmax=1., vmin=1e-10):
+    best_accuracy = 0.
+    best_hyp1 = best_hyp2 = vmax
+    hyp1 = hyp2 = vmax
+
+    logger.info(f'Performing grid search for hyperparams [{vmax} - {vmin}]')
+    while hyp1 > vmin:
+      hyp2 = vmax
+      while hyp2 > vmin:
+        self.smoothing_emission_pnoun = hyp1
+        self.smoothing_emission_unknown = hyp2
+        accuracy = self.evaluate(dataloader)
+        if accuracy > best_accuracy:
+          best_accuracy = accuracy
+          best_hyp1, best_hyp2 = hyp1, hyp2
+        hyp2 /= 10.
+      hyp1 /= 10.
+
+    logger.info(f'Best hyperparams values: hyp1:{best_hyp1} hyp2:{best_hyp2}')
+    self.smoothing_emission_pnoun = best_hyp1
+    self.smoothing_emission_unknown = best_hyp2
 
   def predict(self, sentence):
     viterbi = [{}]
@@ -153,7 +180,7 @@ class MarkovPOSTagger(BaselinePOSTagger):
           if prev_state == 'start':
             continue
           p_transition = self.get_transition_prob(prev_state, state)
-          prob = p_transition * viterbi[i-1][prev_state]['prob'] #+ p_emission
+          prob = p_transition * viterbi[i-1][prev_state]['prob']
 
           if prob > max_prob:
             max_prob = prob

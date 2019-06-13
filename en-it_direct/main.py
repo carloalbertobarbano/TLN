@@ -20,6 +20,10 @@ if __name__ == '__main__':
   markov_tagger = MarkovPOSTagger()
   markov_tagger.train(train_set)
 
+  markov_tagger.smoothing_emission_pnoun = 1.e-6
+  markov_tagger.smoothing_emission_unknown = 1.e-7
+  #markov_tagger.tune_hyperparams(dev_set)
+
   sentence, tags = test_set[5] #['Secretariat', 'is', 'expected', 'to', 'race', 'tomorrow']
   print(f'Predicting: {sentence}')
   print(f'Tags: {tags}')
