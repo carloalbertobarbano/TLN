@@ -113,6 +113,10 @@ def svx_sxv(S):
     S.tag = 'XV'
     S.children.reverse()
 
+    if S.children[0].children and len(S.children[0].children) > 1:
+      if S.children[0].children[0].symbol == 'ADV' and S.children[0].children[1].symbol == 'NP':
+        S.children[0].children.reverse()
+
 def sxv_xsv(S):
   if not S.children or len(S.children) < 2:
     return
@@ -120,37 +124,49 @@ def sxv_xsv(S):
   sxv_xsv(S.children[0])
   sxv_xsv(S.children[1])
 
+  if S.tag == 'XV':
+    S.tag = 'SV'
+
   if S.children[0].tag == 'S' and S.children[1].children[0].tag == 'X':
-    S.tag = 'SX'
     s = S.children[0]
     x = S.children[1].children[0]
     S.children[0], S.children[1].children[0] = x, s
   
-def transfer(src):
+def transfer(src: Constituent):
   res = copy.deepcopy(src)
   
   # Step 1. SVX -> SXV
   svx_sxv(res)
+  #print('svx->sxv: ')
+  #res.print_sentence()
+  
   # Step 2. SXV -> XSV
   sxv_xsv(res)
+  #print('\nsxv->xsv: ')
+  #res.print_sentence()
   
   return res
 
 if __name__ == '__main__':
-  sentence = sys.argv[1]
-
-  cfg = parse_grammar('G1.cfg')
+  cfg = parse_grammar('G2.cfg')
   print(cfg)
-
-  matrix = CKY(cfg, sentence)
-
-  S = matrix[0, -1][0]
-  S.print_sentence()
   print()
 
-  tag_svx(S, ['S -> S VX', 'VP -> V X'])
-  print(repr(S))
+  with open('./sentences.txt', 'r') as file:
+    sentences = file.readlines()
+  
+  for sentence in sentences:
+    sentence = sentence.strip()
+    matrix = CKY(cfg, sentence)
+    
+    S = matrix[0, -1][0]
+    S.print_sentence()
+    print()
 
-  res = transfer(S)
-  print(repr(res))
-  res.print_sentence()
+    tag_svx(S, ['S -> S VX', 'VP -> V X'])
+    print(repr(S))
+
+    res = transfer(S)
+    print(repr(res))
+    res.print_sentence()
+    print("\n")
