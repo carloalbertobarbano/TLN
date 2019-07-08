@@ -23,11 +23,11 @@ def rec_hypernyms(s: Synset) -> List[Synset]:
 
 def get_hypernyms(s: Synset) -> List[Synset]:
   if not s._all_hypernyms:
-    #s._all_hypernyms = rec_hypernyms(s)
-    s._all_hypernyms = []
-    for synsets in s._iter_hypernym_lists():
-      for synset in synsets:
-        s._all_hypernyms.append(synset)
+    s._all_hypernyms = rec_hypernyms(s)
+    #s._all_hypernyms = []
+    #for synsets in s._iter_hypernym_lists():
+    #  for synset in synsets:
+    #    s._all_hypernyms.append(synset)
   return s._all_hypernyms
 
 def common_hypernyms(hp1, hp2) -> List[Synset]:
@@ -219,8 +219,8 @@ if __name__ == '__main__':
   print(f'Different LCSs: {diff_lcs}')
 
 
-  a = [1,2,3,4,5,6]
-  b = a[::-1]
+  #a = [1,2,3,4,5,6]
+  #b = a[::-1]
 
-  print(f"pearson({a}, {b}): {pearson_corr(a,b)}")
-  print(f"spearman({a}, {b}): {spearman_corr(a,b)}")
+  #print(f"pearson({a}, {b}): {pearson_corr(a,b)}")
+  #print(f"spearman({a}, {b}): {spearman_corr(a,b)}")
