@@ -1,11 +1,8 @@
 import nltk
 import spacy
-import spacy_wordnet
 import collections
-#import pandas as pd
-import numpy as np
-import json
 import warnings
+
 warnings.filterwarnings('ignore')
 from spacy_wordnet.wordnet_annotator import WordnetAnnotator
 from collections import Counter
@@ -14,22 +11,23 @@ from nltk.corpus import wordnet as wn
 
 import sys
 
-babelnet_ids = {}
 nlp = spacy.load("en_core_web_lg")
 nlp.add_pipe(WordnetAnnotator(nlp.lang), after='tagger')
+
 
 def load_defs(path):
   with open(path, 'r') as file:
     lines = file.readlines()
-  
+
   terms = []
-  definitions = []  
+  definitions = []
 
   for line in lines:
     chunks = line.lower().strip().split('\t')
     terms.append(chunks[0])
     definitions.append(chunks[1:])
   return terms, definitions
+
 
 def find_form(term, definitions):
   stopwords = nltk.corpus.stopwords.words('english')
@@ -39,21 +37,21 @@ def find_form(term, definitions):
   context = []
 
   for definition in definitions:
-    #1. PoS tagging
+    # 1. PoS tagging
     text = nlp(definition)
 
-    #2. Estrarre SUBJ con relativi ADJ e OBJ
-    #tags = ['nsubj', 'ROOT', 'dobj', 'pobj', 'conj', 'amod']
+    # 2. Estrarre SUBJ con relativi ADJ e OBJ
+    # tags = ['nsubj', 'ROOT', 'dobj', 'pobj', 'conj', 'amod']
     tags = ['ROOT', 'ADJ']
     subjs = filter(lambda token: token.dep_ in tags, text)
 
-    #3. Termini rilevanti = tutti i termini della definizione - stopwords
+    # 3. Termini rilevanti = tutti i termini della definizione - stopwords
     exclude_tags = '.,:;!?()”“…'
     relevant_words = filter(lambda token: token.text not in stopwords, text)
     relevant_words = filter(lambda token: token.text not in exclude_tags, relevant_words)
     relevant_words = list(relevant_words)
 
-    #4. Dominio = soggetti + wordnet domains del contesto
+    # 4. Dominio = soggetti + wordnet domains del contesto
     #   Synsets = synsets del contesto
     #   Context = termini rilevanti
     domains.extend(list(map(lambda t: t.text, subjs)))
@@ -61,13 +59,13 @@ def find_form(term, definitions):
       domains.extend(token._.wordnet.wordnet_domains())
       synsets.extend(token._.wordnet.synsets())
       context.append(token.text)
-  
-  #5. Domini più frequenti (top 10)
+
+  # 5. Domini più frequenti (top 10)
   counter = Counter(domains)
   most_common = counter.most_common(10)
   print("---DOMAINS:", most_common)
 
-  #6. Context = termini del contesto più frequenti
+  # 6. Context = termini del contesto più frequenti
   c_counter = Counter(context)
   c_common = c_counter.most_common(15)
   print("---CONTEXT:", c_common)
@@ -79,8 +77,7 @@ def find_form(term, definitions):
   best_score = 0
   best_level = 0
 
-  
-  #7. Esplorazione dei domini -> top down
+  # 7. Esplorazione dei domini -> top down
   #   Per ogni synset di un dominio, cerco tra gli iponimi quello che
   #   ha score di similarità maggiore rispetto al contesto
   #   (idea: da termine generale a termine specifico)
@@ -101,29 +98,31 @@ def find_form(term, definitions):
 
   return best_synset, best_level
 
+
 def find_most_similar_hyponym(synset, context, level=1, lower_bound=0, verbose=False):
   definition = synset.definition()
   if verbose:
-    print('-'*level + f'Level {level}, synset: {synset}')
-    print('-'*level + f'Definition: {definition}')
+    print('-' * level + f'Level {level}, synset: {synset}')
+    print('-' * level + f'Definition: {definition}')
 
   definition = nlp(definition)
   definition = nlp(' '.join([str(t) for t in definition if not t.is_stop]))
 
   best_hyponym = synset
-  best_score = definition.similarity(context) #compute_overlap_sim(context, definition)
+  best_score = definition.similarity(context)
   best_level = level
   if best_score < lower_bound:
-    return best_hyponym, best_score, best_level-1
+    return best_hyponym, best_score, best_level - 1
 
   for hyponym in synset.hyponyms():
-    syn, score, c_level = find_most_similar_hyponym(hyponym, context, level+1, best_score, verbose)
+    syn, score, c_level = find_most_similar_hyponym(hyponym, context, level + 1, best_score, verbose)
     if score > best_score:
       best_hyponym = syn
       best_score = score
       best_level = c_level
 
   return best_hyponym, best_score, best_level
+
 
 def find_most_similar_synset(synsets, context, lower_bound=0, verbose=False, recursive=True):
   best_synset = None
@@ -136,7 +135,7 @@ def find_most_similar_synset(synsets, context, lower_bound=0, verbose=False, rec
       synset, score, c_level = find_most_similar_hyponym(synset, context, lower_bound=lower_bound, verbose=verbose)
     else:
       definition = nlp(synset.definition())
-      definition =  nlp(' '.join([str(t) for t in definition if not t.is_stop]))
+      definition = nlp(' '.join([str(t) for t in definition if not t.is_stop]))
       score = definition.similarity(context)
 
     if score > best_score:
@@ -145,7 +144,8 @@ def find_most_similar_synset(synsets, context, lower_bound=0, verbose=False, rec
       level = c_level
   return best_synset, best_score, level
 
-def find_form_vale_version(term, definitions):
+
+def find_form_v2(term, definitions):
   stopwords = nltk.corpus.stopwords.words('english')
   domains = []
   relevant_words = []
@@ -167,8 +167,6 @@ def find_form_vale_version(term, definitions):
         subjects.append(token.text)
       else:
         relevant_words.append(token.text)
-        # TODO: estende le parole importanti con il loro dominio
-        # relevant_words.extend(filter(lambda tok: tok not in stopwords, token._.wordnet.wordnet_domains()))
 
   # 4. Synset di iperonimo ricavato ripetere finche punteggio new_hyper_score > old_hyper_score
   old_hyper_score = 0
@@ -196,8 +194,8 @@ def find_form_vale_version(term, definitions):
     scores = []
     for couple in gloss_hyponyms:
       print(couple)
-      # 6. W.O. tra contesto (relevant_words) e parole della gloss
-      score = compute_overlap_sim(relevant_words, couple[1])
+      # 6.similarity tra contesto (relevant_words) e parole della gloss
+      score = compute_similarity(relevant_words, couple[1])
       scores.append(score)
 
     # 7. trovare il max e settare old e new score
@@ -210,9 +208,10 @@ def find_form_vale_version(term, definitions):
   print('Risultato:', subject_synset, "Definizione: ", subject_synset.definition(), "Depth:", depth, "\n")
   return subject_synset, depth
 
-def compute_overlap_sim(context, text):
+
+def compute_similarity(context, text):
   stopwords = nltk.corpus.stopwords.words('english')
-  #print(f'Computing similarity between {context} and {text}')
+  # print(f'Computing similarity between {context} and {text}')
 
   tot_score = []
   tokens = list(filter(lambda t: t.text not in stopwords, nlp(text)))
@@ -222,7 +221,8 @@ def compute_overlap_sim(context, text):
       sim = token1.similarity(word2)
       tot_score.append(sim)
 
-  return sum(tot_score) / (len(context)+len(tokens))
+  return sum(tot_score) / (len(context) + len(tokens))
+
 
 def sentence_similarity(s1, s2):
   s1 = nlp(s1)
@@ -232,6 +232,7 @@ def sentence_similarity(s1, s2):
   s2 = nlp(' '.join([str(t) for t in s2 if not t.is_stop]))
 
   return s1.similarity(s2)
+
 
 def select_best_synset_by_defs(synsets, definitions):
   best_synset = None
@@ -247,6 +248,7 @@ def select_best_synset_by_defs(synsets, definitions):
       best_score = curr_score
   return best_synset
 
+
 if __name__ == '__main__':
   nltk.download('punkt')
   nltk.download('averaged_perceptron_tagger')
@@ -257,13 +259,13 @@ if __name__ == '__main__':
     index = int(sys.argv[1])
     terms = [terms[index]]
     definitions = [definitions[index]]
-  
+
   forms1 = []
   forms2 = []
 
   for t, d in zip(terms, definitions):
     forms1.append(find_form(t, d))
-    forms2.append(find_form_vale_version(t, d))
+    forms2.append(find_form_v2(t, d))
 
   print('---------------- RESULTS -------------------')
   for i, (form1, form2) in enumerate(zip(forms1, forms2)):
@@ -283,8 +285,3 @@ if __name__ == '__main__':
       best_synset = select_best_synset_by_defs((synset1, synset2), definitions[i])
 
     print(f'Ground: {terms[i]}\t\t - Found: {[str(x.name()) for x in best_synset.lemmas()]} \t\t [s1: {(synset1, depth1)} s2: {(synset2, depth2)}]')
-
-
-
-
-
