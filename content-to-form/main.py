@@ -39,45 +39,51 @@ def find_form(term, definitions):
   context = []
 
   for definition in definitions:
-    # 1. PoS tagging
+    #1. PoS tagging
     text = nlp(definition)
 
-    # 2. Estrarre SUBJ con relativi ADJ e OBJ
+    #2. Estrarre SUBJ con relativi ADJ e OBJ
     #tags = ['nsubj', 'ROOT', 'dobj', 'pobj', 'conj', 'amod']
     tags = ['ROOT', 'ADJ']
-    exclude_tags = '.,:;!?()”“…'
     subjs = filter(lambda token: token.dep_ in tags, text)
+
+    #3. Termini rilevanti = tutti i termini della definizione - stopwords
+    exclude_tags = '.,:;!?()”“…'
     relevant_words = filter(lambda token: token.text not in stopwords, text)
     relevant_words = filter(lambda token: token.text not in exclude_tags, relevant_words)
     relevant_words = list(relevant_words)
 
-    # 3. Ricavare SUBJ principale (es. più ricorrente, o iperonimo soggetti?)
+    #4. Dominio = soggetti + wordnet domains del contesto
+    #   Synsets = synsets del contesto
+    #   Context = termini rilevanti
     domains.extend(list(map(lambda t: t.text, subjs)))
     for token in relevant_words:
       domains.extend(token._.wordnet.wordnet_domains())
       synsets.extend(token._.wordnet.synsets())
       context.append(token.text)
   
+  #5. Domini più frequenti (top 10)
   counter = Counter(domains)
   most_common = counter.most_common(10)
   print("---DOMAINS:", most_common)
 
-  #counter = Counter(synsets)
-  #most_common = counter.most_common(10)
-  #print(most_common)
-
+  #6. Context = termini del contesto più frequenti
   c_counter = Counter(context)
   c_common = c_counter.most_common(15)
   print("---CONTEXT:", c_common)
   print()
+  context = list(map(lambda c: c[0], c_common))
+  context = nlp(' '.join(context))
 
   best_synset = None
   best_score = 0
   best_level = 0
 
-  context = list(map(lambda c: c[0], c_common))
-  context = nlp(' '.join(context))
-
+  
+  #7. Esplorazione dei domini -> top down
+  #   Per ogni synset di un dominio, cerco tra gli iponimi quello che
+  #   ha score di similarità maggiore rispetto al contesto
+  #   (idea: da termine generale a termine specifico)
   for lemma in most_common:
     print(f'Exploring domain "{lemma[0]}"')
     synset, score, level = find_most_similar_synset(wn.synsets(lemma[0]),
@@ -130,7 +136,7 @@ def find_most_similar_synset(synsets, context, lower_bound=0, verbose=False, rec
       synset, score, c_level = find_most_similar_hyponym(synset, context, lower_bound=lower_bound, verbose=verbose)
     else:
       definition = nlp(synset.definition())
-      definition = nlp(' '.join([str(t) for t in definition if not t.is_stop]))
+      definition =  nlp(' '.join([str(t) for t in definition if not t.is_stop]))
       score = definition.similarity(context)
 
     if score > best_score:
@@ -242,9 +248,6 @@ def select_best_synset_by_defs(synsets, definitions):
   return best_synset
 
 if __name__ == '__main__':
-  with open('babelnet_ids.json', 'r') as file:
-    babelnet_ids = json.load(file)
-
   nltk.download('punkt')
   nltk.download('averaged_perceptron_tagger')
   nltk.download('wordnet')
@@ -257,7 +260,7 @@ if __name__ == '__main__':
   
   forms1 = []
   forms2 = []
-  #TODO: per ogni coppia termine/definizioni
+
   for t, d in zip(terms, definitions):
     forms1.append(find_form(t, d))
     forms2.append(find_form_vale_version(t, d))
@@ -269,13 +272,17 @@ if __name__ == '__main__':
     depth1 = synset1.min_depth()
     depth2 = synset2.min_depth()
     best_synset = synset1
+
+    # Per scegliere la form migliore si preferisce synset con depth più alta (= più specifico)
     if depth2 > depth1:
       best_synset = synset2
 
+    # A parità di depth si seleziona synset la cui definizione ha score di similarità maggiore
+    # con le definizioni date
     if depth1 == depth2:
       best_synset = select_best_synset_by_defs((synset1, synset2), definitions[i])
 
-    print(f'Ground: {terms[i]}\t\t - Found: {best_synset} \t\t [s1: {(synset1, depth1)} s2: {(synset2, depth2)}]')
+    print(f'Ground: {terms[i]}\t\t - Found: {[str(x.name()) for x in best_synset.lemmas()]} \t\t [s1: {(synset1, depth1)} s2: {(synset2, depth2)}]')
 
 
 
