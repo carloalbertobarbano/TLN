@@ -30,6 +30,9 @@ def load_defs(path):
 
 
 def find_form(term, definitions):
+  print()
+  print('-'*25)
+  print(f'Termine target: {term}')
   stopwords = nltk.corpus.stopwords.words('english')
 
   domains = []
@@ -40,8 +43,7 @@ def find_form(term, definitions):
     # 1. PoS tagging
     text = nlp(definition)
 
-    # 2. Estrarre SUBJ con relativi ADJ e OBJ
-    # tags = ['nsubj', 'ROOT', 'dobj', 'pobj', 'conj', 'amod']
+    # 2. Estrarre soggetti (ROOT) con relativi ADJ
     tags = ['ROOT', 'ADJ']
     subjs = filter(lambda token: token.dep_ in tags, text)
 
@@ -85,7 +87,7 @@ def find_form(term, definitions):
     print(f'Exploring domain "{lemma[0]}"')
     synset, score, level = find_most_similar_synset(wn.synsets(lemma[0]),
                                                     context,
-                                                    lower_bound=best_score,
+                                                    lower_bound=best_score - 0.5,
                                                     verbose=False)
     print(f'Best score: {score} with synset {synset}')
     if synset:
@@ -117,6 +119,7 @@ def find_most_similar_hyponym(synset, context, level=1, lower_bound=0, verbose=F
   for hyponym in synset.hyponyms():
     syn, score, c_level = find_most_similar_hyponym(hyponym, context, level + 1, best_score, verbose)
     if score > best_score:
+      print(f'\t{c_level}: {syn}')
       best_hyponym = syn
       best_score = score
       best_level = c_level
@@ -284,4 +287,8 @@ if __name__ == '__main__':
     if depth1 == depth2:
       best_synset = select_best_synset_by_defs((synset1, synset2), definitions[i])
 
-    print(f'Ground: {terms[i]}\t\t - Found: {[str(x.name()) for x in best_synset.lemmas()]} \t\t [s1: {(synset1, depth1)} s2: {(synset2, depth2)}]')
+    print(f'Ground: {terms[i]}')
+    print(f'Found: {[str(x.name()) for x in best_synset.lemmas()]}')
+    print(f'(synsets) [s1: {(synset1, depth1)} s2: {(synset2, depth2)}]')
+    print('-'*25)
+    print()
